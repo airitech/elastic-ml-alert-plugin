@@ -1,6 +1,6 @@
 {
   "name": "es_ml_alert",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Create Alert Setting for ML",
   "main": "index.js",
   "kibana": {
