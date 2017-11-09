@@ -1,0 +1,22 @@
+<div class="kuiLocalNav">
+    <div class="kuiLocalNavRow">
+        <!-- Top left corner slot, e.g. breadcrumbs, title. -->
+        <div class="kuiLocalBreadcrumbs">
+            <!-- ngRepeat: crumb in breadcrumbs -->
+            <div class="kuiLocalBreadcrumb">
+                <a class="kuiLocalBreadcrumb__link" href="#/">ML Alert</a>
+            </div>
+        </div>
+    </div>
+    <div class="kuiLocalNavRow kuiLocalNavRow--secondary">
+        <!-- Bottom row slot, e.g. tabs. -->
+        <div data-transclude-slot="bottomRow" class="kuiLocalTabs">
+            <a href="#/alert_list" class="kuiLocalTab" ng-class="{'kuiLocalTab-isSelected': hCtrl.path == 'alert_list'}">
+              設定通知一覧
+            </a>
+            <a href="#/alert_setting" class="kuiLocalTab" ng-class="{'kuiLocalTab-isSelected': hCtrl.path == 'alert_setting'}">
+              通知設定
+            </a>
+        </div>
+    </div>
+</div>

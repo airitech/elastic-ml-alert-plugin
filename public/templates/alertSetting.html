@@ -1,0 +1,255 @@
+<ml-header></ml-header>
+<div class="kuiViewContent kuiViewContent--constrainedWidth">
+  <div class="kuiViewContentItem kuiBar kuiVerticalRhythm">
+    <div>
+      <h1 class="kuiTitle">
+        通知設定
+      </h1>
+    </div>
+  </div>
+  <div class="kuiViewContentItem kuiControlledTable kuiVerticalRhythm" ng-init="asCtrl.init()">
+    <form name="form" role="form" class="well ng-pristine ng-valid ng-valid-index-name-input ng-valid-required" ng-submit="asCtrl.save();">
+      <div class="form-group">
+        <label>Machine Leaning JobのIDを入力してください。</label>
+        <div class="kuiToolBar">
+          <input ng-model="asCtrl.input.mlJobId" ng-change="asCtrl.changeJobId();" name="mlJobId" required="" type="text" class="form-control"
+            placeholder="Job ID">
+        </div>
+        <table class="kuiTable" ng-if="mlJobsCandidates.length || asCtrl.input.mlJobId">
+          <thead>
+            <tr>
+              <th class="kuiTableHeaderCell jobId">
+                Job ID
+              </th>
+              <th class="kuiTableHeaderCell">
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="job in mlJobsCandidates | orderBy:'job_id' | limitTo:20 track by job.job_id" class="kuiTableRow" ng-click="asCtrl.selectJob(job.job_id);"
+              ng-class="{isSelected: job.job_id == asCtrl.input.mlJobId}">
+              <td class="kuiTableRowCell">
+                <div class="kuiTableRowCell__liner">
+                  {{job.job_id}}
+                </div>
+              </td>
+              <td class="kuiTableRowCell">
+                <div class="kuiTableRowCell__liner">
+                  {{job.description}}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="kuiPanel kuiPanel--centered kuiPanel--withToolBar" ng-if="loaded && !mlJobsCandidates.length && !asCtrl.input.mlJobId" ng-cloak>
+          <div class="kuiTableInfo kuiNoItems">
+            Machine Learning Jobがありません。最初にMachine Learning Jobを作成してください。
+          </div>
+        </div>
+      </div>
+      <br />
+      <br />
+      <div ng-show="asCtrl.internal.showSetting">
+        <div class="form-group">
+          <label>通知設定のIDを指定してください。</label>
+          <p class="help-block">
+            英数字と"_"及び"-"が利用可能です。
+          </p>
+          <input id="alertId" name="description" ng-model="asCtrl.input.alertId" required="" type="text" class="form-control" placeholder="alert_id"
+            ng-change="asCtrl.checkAlertId()">
+          <div class="hintbox" ng-if="asCtrl.existsAlert">
+            <p class="ng-binding">
+              既に存在するアラートIDのため、保存すると上書きされます
+            </p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>通知の概要説明を記載してください。</label>
+          <input name="description" ng-model="asCtrl.input.description" required="" type="text" class="form-control" placeholder="CPU使用率の異常を検知します。">
+        </div>
+        <div class="form-group">
+          <label>通知メールのタイトルを記載してください。</label>
+          <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="Elasticsearch ML 異常検知通知">
+        </div>
+        <div class="form-group">
+          <label>メールアドレスを入力してください。</label><br />
+          <label>To:</label>
+          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressTo track by $index">
+            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30">
+            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteTo($index)" aria-label="Remove mailto input field" tooltip="Remove input field"
+              tooltip-append-to-body="true" ng-if="$index > 0">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </a>
+          </div>
+          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addTo()" aria-label="Add mailto input field" tooltip="Add input field"
+            tooltip-append-to-body="true">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </a>
+        </div>
+        <div class="form-group">
+          <label>Cc:</label>
+          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressCc track by $index">
+            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30">
+            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
+              tooltip-append-to-body="true">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </a>
+          </div>
+          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addCc()" aria-label="Add mail cc input field" tooltip="Add input field"
+            tooltip-append-to-body="true">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </a>
+        </div>
+        <div class="form-group">
+          <label>Bcc:</label>
+          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressBcc track by $index">
+            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30">
+            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
+              tooltip-append-to-body="true">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </a>
+          </div>
+          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addBcc()" aria-label="Add mail bcc input field" tooltip="Add input field"
+            tooltip-append-to-body="true">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </a>
+        </div>
+        <div class="form-group">
+          <label>通知に含めるリンク先のDashboardを選んでください。</label>
+          <table class="kuiTable" ng-if="asCtrl.dashboards.length">
+            <thead>
+              <tr>
+                <th class="kuiTableHeaderCell dashboardTitle">
+                  Title
+                </th>
+                <th class="kuiTableHeaderCell">
+                  Description
+                </th>
+                <th class="kuiTableHeaderCell deleteButton"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="dashboard in asCtrl.dashboards | orderBy:'name' | limitTo:20 track by dashboard.id" class="kuiTableRow">
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    {{dashboard.title}}
+                  </div>
+                </td>
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    {{dashboard.description}}
+                  </div>
+                </td>
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    <a class="kuiButton kuiButton--danger" ng-click="asCtrl.removeDashboard($index)" tooltip="Remove dashboard" tooltip-append-to-body="true">
+                      <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="btn btn-success" ng-click="asCtrl.selectDashboard()">
+              <span>Dashboard一覧から選択</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>通知する閾値を入力してください。</label>
+          <span class="sevierity-level" ng-click="asCtrl.setThreshold(75)">
+            <i class="fa fa-exclamation-triangle icon-severity-critical"></i>
+            critical 以上
+          </span>
+          <span class="sevierity-level" ng-click="asCtrl.setThreshold(50)">
+            <i class="fa fa-exclamation-triangle icon-severity-major"></i>
+            major 以上
+          </span>
+          <span class="sevierity-level" ng-click="asCtrl.setThreshold(25)">
+            <i class="fa fa-exclamation-triangle icon-severity-minor"></i>
+            minor 以上
+          </span>
+          <span class="sevierity-level" ng-click="asCtrl.setThreshold(0)">
+            <i class="fa fa-exclamation-triangle icon-severity-warning"></i>
+            warning 以上
+          </span>
+          <input name="threshold" ng-model="asCtrl.input.threshold" required="" type="number" class="form-control" placeholder="0"
+            size="15" min="0" max="100">
+        </div>
+        <div ng-show="!asCtrl.internal.ShowDetailSetting" ng-click="asCtrl.showDetail();">
+          <span aria-hidden="true" class="kuiIcon fa-caret-right"> 詳細設定を開く
+        </div>
+        <div ng-show="asCtrl.internal.ShowDetailSetting" ng-click="asCtrl.hideDetail();">
+          <span aria-hidden="true" class="kuiIcon fa-caret-down"> 詳細設定を閉じる
+        </div>
+        <br />
+        <div ng-show="asCtrl.internal.ShowDetailSetting">
+          <div class="form-group">
+            <label>通知タイミングを設定してください。</label>
+            <p class="help-block">
+              タイミングはCronまたは繰り返し期間によって指定できます。
+            </p>
+            <select ng-model="asCtrl.input.scheduleKind" class="form-control" required="required">
+              <option value="cron" selected="selected">Cron</option>
+              <option value="interval">繰り返し期間</option>
+              <!--<option value="custom">カスタム</option>-->
+            </select>
+            <input name="triggerSchedule" ng-model="asCtrl.input.triggerSchedule" required="" type="text" class="form-control">
+            <div class="hintbox" ng-if="asCtrl.input.scheduleKind == 'cron'">
+              <p class="ng-binding">
+                例：0 3/15 * * * ? ← 毎時 3分、18分、33分、48分に実行
+              </p>
+            </div>
+            <div class="hintbox" ng-if="asCtrl.input.scheduleKind == 'interval'">
+              <p class="ng-binding">
+                例：3m ← 3分間隔で実行
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>通知時にチェック対象とする異常検知結果の期間を指定してください。</label>
+            <input name="detectInterval" ng-model="asCtrl.input.detectInterval" required="" type="text" class="form-control">
+            <div class="hintbox">
+              <p>
+                通知タイミングの間隔に合わせてください。
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>リンク対象Dashboardを開く際に、異常検知時刻の何秒前から何秒後までの時間範囲で表示するかを指定してください。</label>
+            <input name="kibanaDisplayTerm" ng-model="asCtrl.input.kibanaDisplayTerm" required="" type="number" min="1" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>通知メールに時刻を記載する際のフォーマットを決めるための、localeを指定してください。</label>
+            <input name="locale" ng-model="asCtrl.input.locale" required="" type="text" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>MLの異常検知結果が確定するまでの遅延時間を入力してください。</label>
+            <input name="mlProcessTime" ng-model="asCtrl.input.mlProcessTime" required="" type="text" class="form-control">
+            <div class="hintbox">
+              <p>
+                bucket_span + frequency + query_delay + (ML処理時間)
+                とする必要があります。<br />
+                この値を小さくし過ぎると、異常検知結果が正しく通知されません。
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>KibanaのURLを指定してください。</label>
+            <input name="locale" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-success">
+          <span>{{asCtrl.existsAlert ? "Update" : "Save"}}</span>
+        </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

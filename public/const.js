@@ -1,0 +1,144 @@
+var constValue = {
+  names: {
+    appName: 'ml_alert',
+    mlIndexName: '.ml-anomalies-*',
+    indexName: '.ml-alert'
+  },
+  displayNames: {
+    'alert_list': '設定通知一覧',
+    'alert_setting': '通知設定'
+  },
+  paths: {
+    console: {
+      method: 'POST',
+      path: '/api/console/proxy'
+    },
+    mlJobList: {
+      method: 'GET',
+      path: '_xpack/ml/anomaly_detectors/'
+    },
+    mlJobDataFeed: {
+      method: 'GET',
+      path: '_xpack/ml/datafeeds/'
+    },
+    getWatch: {
+      method: 'GET',
+      path: '_xpack/watcher/watch/'
+    },
+    deleteWatch: {
+      method: 'DELETE',
+      path: '_xpack/watcher/watch/'
+    },
+    editWatch: {
+      method: 'PUT',
+      path: '_xpack/watcher/watch/'
+    }
+  },
+  alert: {
+    threshold: 40,
+    notification: 'mail',
+    processTime: '3m'
+  },
+  alertTemplate: {
+    "trigger": {
+      "schedule": {
+        "interval": "1m"
+      }
+    },
+    "input": {
+      "search": {
+        "request": {
+          "search_type": "query_then_fetch",
+          "indices": [
+            ".ml-anomalies-*"
+          ],
+          "types": [],
+          "body": {
+            "sort": [
+              {
+                "timestamp": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "result_type": "record"
+                    }
+                  },
+                  {
+                    "match": {
+                      "job_id": "{{ctx.metadata.job_id}}"
+                    }
+                  },
+                  {
+                    "range": {
+                      "record_score": {
+                        "gt": "{{ctx.metadata.threshold}}"
+                      }
+                    }
+                  },
+                  {
+                    "range": {
+                      "timestamp": {
+                        "from": "now-{{ctx.metadata.detect_interval}}-{{ctx.metadata.ml_process_time}}",
+                        "to": "now-{{ctx.metadata.ml_process_time}}"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "condition": {
+      "compare": {
+        "ctx.payload.hits.total": {
+          "gt": 0
+        }
+      }
+    },
+    "actions": {
+      "send_email": {
+        "transform": {
+          "script": {
+            "id": "create_partition_notify_for_mail",
+            "lang": "painless"
+          }
+        },
+        "email": {
+          "profile": "standard",
+          "to": [
+            "sample@sample.com"
+          ],
+          "subject": "{{ctx.metadata.subject}}",
+          "body": {
+            "html": "{{ctx.payload.message}}"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "quate": "'",
+      "link_dashboards": [],
+      "kibana_display_term": 3600,
+      "detect_interval": "1m",
+      "description": "",
+      "threshold": 0,
+      "locale": "Asia/Tokyo",
+      "kibana_url": "http://localhost:5601/",
+      "alert_type": "mla",
+      "ml_process_time": "3m",
+      "subject": "Elasticsearch ML 異常検知通知",
+      "double_quate": "\"",
+      "job_id": "",
+      "date_format": "yyyy/MM/dd HH:mm:ss"
+    }
+  }
+};
+export default constValue;

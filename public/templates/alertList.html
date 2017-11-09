@@ -1,0 +1,166 @@
+<ml-header></ml-header>
+<div class="kuiViewContent kuiViewContent--constrainedWidth">
+  <div class="kuiViewContentItem kuiBar kuiVerticalRhythm">
+    <div>
+      <h1 class="kuiTitle">
+        設定通知一覧
+      </h1>
+    </div>
+  </div>
+  <div class="kuiViewContentItem kuiControlledTable kuiVerticalRhythm">
+    <div class="kuiToolBar">
+      <div class="kuiToolBarSearch">
+        <div class="kuiToolBarSearchBox">
+          <div class="kuiToolBarSearchBox__icon kuiIcon fa-search"></div>
+          <input class="kuiToolBarSearchBox__input" type="text" placeholder="Search..." ng-model="filterText" ng-change="filterAlertId();" aria-label="Filter">
+        </div>
+      </div>
+      <div class="kuiToolBarSection">
+        <button class="kuiButton kuiButton--primary" ng-click="moveCreate()" aria-label="Create New Alert">
+          <span class="kuiButton__inner">
+            <span>追加</span>
+           </span>
+        </button>
+        <button class="kuiButton kuiButton--basic kuiButton--iconText" ng-click="bulkEdit()" aria-label="Create New Alert" ng-disabled="selectedItems.length == 0">
+          <span class="kuiButton__inner">
+            <span>一括操作</span>
+          </span>
+        </button>
+      </div>
+      <div class="kuiToolBarSection">
+        <!-- TODO Pagination-->
+        <!--<div class="kuiToolBarText">
+          1–7 of 7
+        </div>
+        <div class="kuiButtonGroup">
+          <button class="kuiButton kuiButton--basic kuiButton--icon">
+            <span class="kuiButton__icon kuiIcon fa-chevron-left"></span>
+          </button>
+          <button class="kuiButton kuiButton--basic kuiButton--icon">
+            <span class="kuiButton__icon kuiIcon fa-chevron-right"></span>
+          </button>
+        </div>-->
+      </div>
+    </div>
+    <table class="kuiTable ng-scope" ng-init="init()">
+      <thead>
+        <tr>
+          <!-- ngRepeat: col in columns -->
+          <th class="kuiTableHeaderCell kuiTableHeaderCell--checkBox">
+            <input type="checkbox" class="kuiCheckBox" ng-checked="areAllRowsChecked()" ng-click="toggleAll()">
+          </th>
+          <th class="kuiTableHeaderCell alertId">
+            アラートID
+          </th>
+          <th class="kuiTableHeaderCell description">
+            概要
+          </th>
+          <th class="kuiTableHeaderCell state">
+            状態
+          </th>
+          <th class="kuiTableHeaderCell">
+            メール
+          </th>
+          <th class="kuiTableHeaderCell">
+            リンクDashboard
+          </th>
+          <th class="kuiTableHeaderCell actions">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody ml-rows="page" ml-rows-min="perPage">
+        <tr class="kuiTableRow" ng-repeat-start="(jobId, alerts) in mlJobAlerts track by jobId">
+          <td class="kuiTableRowCell category" colspan="7">
+            <div class="kuiTableRowCell__liner">
+              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!({{jobId}})),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat="alert in alerts track by alert._id" class="kuiTableRow">
+          <td class="kuiTableRowCell kuiTableRowCell--checkBox">
+            <div class="kuiTableRowCell__liner">
+              <input type="checkbox" class="kuiCheckBox" ng-click="toggleItem(alert)" ng-checked="selectedItems.indexOf(alert) >= 0">
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner" tooltip="{{alert._id}}">
+              {{alert._id}}
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner description" tooltip="{{alert._source.metadata.description}}">
+              {{alert._source.metadata.description}}
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner">
+              {{alert._source._status.state.active?'OK':'Disabled'}}
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner" ng-repeat="mail in alert._source.actions.send_email.email.to track by $index" ng-class="{'multi-line': alert._source.actions.send_email.email.to.length > 1}" tooltip="{{mail}}">
+              {{mail}}
+            </div>
+            <div class="kuiTableRowCell__liner multi-line-title" ng-if="alert._source.actions.send_email.email.cc.length > 0">
+              Cc:
+            </div>
+            <div class="kuiTableRowCell__liner multi-line" ng-repeat="mail in alert._source.actions.send_email.email.cc track by $index" tooltip="{{mail}}">
+              {{mail}}
+            </div>
+            <div class="kuiTableRowCell__liner multi-line-title" ng-if="alert._source.actions.send_email.email.bcc.length > 0">
+              Bcc:
+            </div>
+            <div class="kuiTableRowCell__liner multi-line" ng-repeat="mail in alert._source.actions.send_email.email.bcc track by $index" tooltip="{{mail}}">
+              {{mail}}
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner" ng-repeat="dashboard in alert._source.metadata.link_dashboards | orderBy:'title' track by dashboard.id" ng-class="{'multi-line': alert._source.metadata.link_dashboards.length > 1}" tooltip="{{dashboard.title}}">
+              {{dashboard.title}}
+            </div>
+          </td>
+          <td class="kuiTableRowCell">
+            <div class="kuiTableRowCell__liner">
+              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
+                <i aria-hidden="true" class="fa fa-pencil-square-o"></i>
+              </button>
+              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
+                <i aria-hidden="true" class="fa fa-clone"></i>
+              </button>
+              <button class="kuiButton kuiButton--danger btn-xs" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
+                <i aria-hidden="true" class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr ng-repeat-end></tr>
+      </tbody>
+    </table>
+    <div class="kuiToolBarFooter" style="border-top: 1px solid #E4E4E4;">
+      <div class="kuiToolBarFooterSection">
+        <div class="kuiToolBarText" ng-hide="selectedItems.length === 0" ng-pluralize count="selectedItems.length" offset="0"
+        when="{
+          '0': '',
+          'one': '{{selectedItems.length}} watch selected',
+          'other': '{{selectedItems.length}} watches selected'
+        }">
+        </div>
+      </div>
+      <div class="kuiToolBarFooterSection">
+        <!-- TODO Pagination-->
+        <!--<div class="kuiToolBarText">
+          1–7 of 7
+        </div>
+        <div class="kuiButtonGroup">
+          <button class="kuiButton kuiButton--basic kuiButton--icon">
+            <span class="kuiButton__icon kuiIcon fa-chevron-left"></span>
+          </button>
+          <button class="kuiButton kuiButton--basic kuiButton--icon">
+            <span class="kuiButton__icon kuiIcon fa-chevron-right"></span>
+          </button>
+        </div>-->
+      </div>
+    </div>
+  </div>
+</div>

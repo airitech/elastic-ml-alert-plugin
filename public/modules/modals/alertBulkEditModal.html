@@ -1,0 +1,153 @@
+<div class="kuiModal" style="width: 450px" data-test-subj="alertBulkEditModal">
+  <div class="kuiModalHeader" ng-if="title">
+    <div class="kuiModalHeader__title" data-test-subj="alertBulkEditModalTitleText">
+      {{title}}
+    </div>
+    <div ng-if="showClose" class="kuiModalHeaderCloseButton kuiIcon fa-times" data-test-subj="alertBulkEditModalCloseButton"
+      ng-click="onClose()"></div>
+  </div>
+  <div class="kuiModalBody">
+    <div class="modalBlock">
+      <div class="modalButton">
+        <button class="kuiButton kuiButton--danger" data-test-subj="alertBulkEditModalDeleteButton" ng-click="onDelete()">
+          {{deleteButtonText}}
+        </button>
+      </div>
+      <div class="modalMessage">
+        {{deleteMessage}}
+      </div>
+    </div>
+    <div class="modalBlock">
+      <div class="modalButton">
+        <button class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalActivateButton" ng-click="onActivate()">
+          {{activateButtonText}}
+        </button>
+      </div>
+      <div class="modalMessage">
+        {{activateMessage}}
+      </div>
+    </div>
+    <div class="modalBlock">
+      <div class="modalButton">
+        <button class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalDeactivateButton" ng-click="onDeactivate()">
+          {{deactivateButtonText}}
+        </button>
+      </div>
+      <div class="modalMessage">
+        {{deactivateMessage}}
+      </div>
+    </div>
+    <div class="modalEditBlock" ng-submit="onBulkUpdate()">
+      <form name="form" role="form">
+        <div class="form-group">
+          <label>{{updateMessage}}</label>
+        </div>
+        <div>
+          <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditMail()" ng-checked="input.editMail">
+            メールアドレスを更新する
+        </div>
+        <div class="form-group">
+          <label>To:</label>
+          <div class="form-inline" ng-repeat="mail in input.mailAddressTo track by $index">
+            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30" ng-disabled="!input.editMail">
+            <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteTo($index)" aria-label="Remove mailto input field" tooltip="Remove input field"
+              tooltip-append-to-body="true" ng-if="$index > 0" ng-disabled="!input.editMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </button>
+          </div>
+          <button type="button" class="kuiButton kuiButton--primary" ng-click="addTo()" aria-label="Add mailto input field" tooltip="Add input field"
+            tooltip-append-to-body="true" ng-disabled="!input.editMail">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </button>
+        </div>
+        <div class="form-group">
+          <label>Cc:</label>
+          <div class="form-inline" ng-repeat="mail in input.mailAddressCc track by $index">
+            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30" ng-disabled="!input.editMail">
+            <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
+              tooltip-append-to-body="true" ng-disabled="!input.editMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </button>
+          </div>
+          <button type="button" class="kuiButton kuiButton--primary" ng-click="addCc()" aria-label="Add mail cc input field" tooltip="Add input field"
+            tooltip-append-to-body="true" ng-disabled="!input.editMail">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </button>
+        </div>
+        <div class="form-group">
+          <label>Bcc:</label>
+          <div class="form-inline" ng-repeat="mail in input.mailAddressBcc track by $index">
+            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+              size="30" ng-disabled="!input.editMail">
+            <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
+              tooltip-append-to-body="true" ng-disabled="!input.editMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </button>
+          </div>
+          <button type="button" class="kuiButton kuiButton--primary" ng-click="addBcc()" aria-label="Add mail bcc input field" tooltip="Add input field"
+            tooltip-append-to-body="true" ng-disabled="!input.editMail">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </button>
+        </div>
+        <div class="form-group">
+          <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditDashboard()" ng-checked="input.editDashboard">
+            通知に含めるリンク先のDashboardを更新する
+          <table class="kuiTable" ng-if="dashboards.length">
+            <thead>
+              <tr>
+                <th class="kuiTableHeaderCell dashboardTitle">
+                  Title
+                </th>
+                <th class="kuiTableHeaderCell">
+                  Description
+                </th>
+                <th class="kuiTableHeaderCell deleteButton"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="dashboard in dashboards | orderBy:'name' | limitTo:20 track by dashboard.id" class="kuiTableRow">
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    {{dashboard.title}}
+                  </div>
+                </td>
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    {{dashboard.description}}
+                  </div>
+                </td>
+                <td class="kuiTableRowCell">
+                  <div class="kuiTableRowCell__liner">
+                    <button type="submit" class="kuiButton kuiButton--danger" ng-click="removeDashboard($index)" tooltip="Remove dashboard" tooltip-append-to-body="true" ng-disabled="!input.editDashboard">
+                      <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <button type="button" class="btn btn-success" ng-click="selectDashboard()" ng-disabled="!input.editDashboard">
+              <span>Dashboard一覧から選択</span>
+            </button>
+          </div>
+        </div>
+        <div class="modalEdit">
+          <div class="modalButton">
+            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editDashboard">
+            {{updateButtonText}}
+          </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="kuiModalFooter">
+    <button class="kuiButton kuiButton--hollow" data-test-subj="alertBulkEditModalCancelButton" ng-click="onCancel()">
+      {{cancelButtonText}}
+    </button>
+  </div>
+</div>

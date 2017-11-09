@@ -1,0 +1,120 @@
+.container {
+  margin-top: 30px;
+}
+
+#mlJobIdLabel {
+  float: left;
+  margin-top: 7px;  
+}
+
+#alertId {
+  width: 50%;
+}
+
+.kuiTableRow{
+  &.isSelected {
+    background-color: #ddf6ff;
+    cursor: default;
+  }
+}
+
+.kuiTableRowCell {
+  &.category {
+    background-color: #efefef;
+  }
+}
+
+.kuiTableHeaderCell {
+  &.alertId {
+    width: 20%;
+  }
+  &.description {
+    width: 25%;
+  }
+  &.state {
+    width: 10%;
+  }
+  &.actions {
+    width: 100px;
+  }
+  &.jobId {
+    width: 30%;
+  }
+  &.dashboardTitle {
+    width: 40%;
+  }
+  &.deleteButton {
+    width:60px;
+  }
+}
+
+.modalBlock {
+  padding: 10px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.modalEdit {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.modalEditBlock {
+  padding: 10px;
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.modalButton {
+  padding: 0px 8px 0px 4px;
+  width: 120px;
+}
+
+.modalMessage {
+  padding: 0px 4px 0px 4px;
+  width: 330px;
+}
+
+.description {
+  white-space: normal;
+}
+
+.sevierity-level {
+  border: 1px solid transparent;
+  padding: 1px 5px;
+  margin: 0px 5px;
+  line-height: 1.5;
+  border-radius: 3px;
+  background-color: #E4E4E4;
+}
+
+.sevierity-level:hover {
+  color: #ffffff;
+  background-color: #444444;
+}
+
+.multi-line {
+  padding: 2px 8px 2px 8px;
+}
+
+.multi-line-title {
+  padding: 7px 8px 2px 8px;
+}
+
+/* From X-Pack Machine Learning */ 
+.icon-severity-critical {
+    color: #fe5050;
+}
+.icon-severity-major {
+    color: #fba740;
+}
+.icon-severity-minor {
+    color: #fbfb49;
+}
+.icon-severity-warning {
+    color: #8bc8fb;
+}
