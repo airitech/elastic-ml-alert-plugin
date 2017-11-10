@@ -1,11 +1,17 @@
 X-Pack Machine Leaning用Alert通知簡単設定プラグイン
 ====
 
+<style>
+  .top {
+    max-width: 70% !important;
+  }
+</style>
+
 Kibana UI上で簡単に<br>
 Elasticsearch Machine Leaningの異常検知時の通知を<br>
 設定することができます。
 
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding" style="max-width:70%;"/>
+<img class="top" src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding"/>
 
 # Requirement
 
