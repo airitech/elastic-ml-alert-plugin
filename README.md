@@ -1,8 +1,8 @@
-X-Pack Machine Leaning用Alert通知簡単設定プラグイン
+Elasticsearch X-Pack Machine Learning用Alert通知簡単設定プラグイン
 ====
 
 Kibana UI上で簡単に<br>
-Elasticsearch Machine Leaningの異常検知時の通知を<br>
+Elasticsearch Machine Learningの異常検知時の通知を<br>
 設定することができます。
 
 <img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert-top.png" alt="Adding"/>
