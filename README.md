@@ -1,19 +1,11 @@
 X-Pack Machine Leaning用Alert通知簡単設定プラグイン
 ====
 
-<style>
-  .top {
-    max-width: 70% !important;
-  }
-</style>
-
 Kibana UI上で簡単に<br>
 Elasticsearch Machine Leaningの異常検知時の通知を<br>
 設定することができます。
 
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding"/>
-
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/01_alert_list-mini.png" alt="Adding"/>
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert-top.png" alt="Adding"/>
 
 # Requirement
 
@@ -30,7 +22,7 @@ Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加
 
 ## Alert設定追加画面
 通知対象としたいML jobを選択し、通知設定を開始します。
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding" style="width: 300px;"/>
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert-usage.png" alt="Adding"/>
 
 ## Alert条件設定
 通知先や通知条件を設定します。以下の設定ができます。
@@ -43,13 +35,13 @@ Alertの起動タイミングなど、<br/>
 
 設定後に、Saveボタンを押下し、保存してください。
 
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/03_setting_condition.png" alt="condition" style="width: 300px;"/>
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/03_setting_condition-usage.png" alt="condition"/>
 
 ## Alert一覧画面
 追加したAlert設定の一覧を表示します。
 一覧の一括削除なども可能です。
 
-<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/04_add_complete.png" alt="list" style="width: 300px;"/>
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/04_add_complete-usage.png" alt="list" style="width: 300px;"/>
 
 # インストール手順
 
