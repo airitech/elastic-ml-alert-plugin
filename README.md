@@ -11,7 +11,9 @@ Kibana UI上で簡単に<br>
 Elasticsearch Machine Leaningの異常検知時の通知を<br>
 設定することができます。
 
-<img class="top" src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding"/>
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding"/>
+
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/01_alert_list-mini.png" alt="Adding"/>
 
 # Requirement
 
