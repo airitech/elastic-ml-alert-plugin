@@ -40,6 +40,7 @@ Alertの起動タイミングなど、<br/>
 ## Alert一覧画面
 追加したAlert設定の一覧を表示します。
 一覧の一括削除なども可能です。
+※注意：通知設定を個別に削除する機能が動作しません。削除は一括削除を利用してください。
 
 <img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/04_add_complete.png" alt="list" style="width: 300px;"/>
 
