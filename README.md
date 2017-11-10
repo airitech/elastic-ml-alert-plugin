@@ -22,6 +22,7 @@ Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加
 
 ## Alert設定追加画面
 通知対象としたいML jobを選択し、通知設定を開始します。
+
 <img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert-usage.png" alt="Adding"/>
 
 ## Alert条件設定
