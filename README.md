@@ -1,9 +1,11 @@
 X-Pack Machine Leaning用Alert通知簡単設定プラグイン
 ====
 
-ElasticsearchのMachineLeaningに対して、
-異常検知時に通知する
-Alert設定を簡易設定できるUIを提供する。
+Kibana UI上で簡単に<br>
+Elasticsearch Machine Leaningの異常検知時の通知を<br>
+設定することができます。
+
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding" style="width: 400px;"/>
 
 # Requirement
 
@@ -11,24 +13,54 @@ Alert設定を簡易設定できるUIを提供する。
 |---|---|---|
 |1|kibana|5.5.0～|
 
-# Usage
+# 使い方
 
-インストール後、Kibanaを起動すると、
-メニューに「ML Alert」というメニューが表示されます。
+インストール実施した後に、Kibanaを起動してください。
+Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加されます。
+こちらを選択して下さい。
+本機能が起動します。
 
-「ML Alert」を選択すると、
-Machine Leaning jobを指定して、
-簡単にAlerting設定ができる画面が表示されます。
+## Alert設定追加画面
+通知対象としたいML jobを選択し、通知設定を開始します。
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/02_add_alert.png" alt="Adding" style="width: 300px;"/>
 
-# Install
+## Alert条件設定
+通知先や通知条件を設定します。以下の設定ができます。
++ 通知先メールアドレス
++ 通知メッセージに含めるリンク先dashboard
++ 通知を行う異常検知スコア値
 
+Alertの起動タイミングなど、<br/>
+上記以外に必要なAlert設定値は、自動で生成します。
+
+設定後に、Saveボタンを押下し、保存してください。
+
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/03_setting_condition.png" alt="condition" style="width: 300px;"/>
+
+## Alert一覧画面
+追加したAlert設定の一覧を表示します。
+一覧の一括削除なども可能です。
+
+<img src="https://raw.github.com/wiki/serive/es-ml-alert/images/ui/04_add_complete.png" alt="list" style="width: 300px;"/>
+
+# インストール手順
+
+### Kibanaへのプラグインインストール
 Kibanaのインストールディレクトリに移動し、以下のコマンドを実行してください。
 
 ```
 ./bin/kibana-plugin install file://<path to plugin>/es_ml_alert-x.x.x_y.y.y.zip
 ```
 
-# development
+### Elasticsearchへの、メール設定追加
+以下を参考に、メール通知用の設定を追加してください。
+
+[E-mail設定参考リンク](https://www.elastic.co/guide/en/elasticsearch/reference/current/notification-settings.html#email-notification-settings)
+
+# 開発に関して
+
+Kibanaプラグインとして開発しています。<br>
+以下にKibanaプラグインの開発情報を記載します。
 
 See the [kibana contributing guide](https://github.com/elastic/kibana/blob/master/CONTRIBUTING.md) for instructions setting up your development environment. Once you have completed that, use the following npm tasks.
 
