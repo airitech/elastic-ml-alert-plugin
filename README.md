@@ -93,5 +93,5 @@ For more information about any of these commands run `npm run ${task} -- --help`
 [Apache Version 2.0](https://github.com/serive/es-ml-alert/blob/master/LICENSE)
 
 # Author
-@serive
+@serive <br/>
 Twitter: @serive8
