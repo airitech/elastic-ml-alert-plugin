@@ -19,7 +19,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
           },
           "sort": [
             {
-              "_uid": {
+              "_id": {
                 "order": "asc"
               }
             }
