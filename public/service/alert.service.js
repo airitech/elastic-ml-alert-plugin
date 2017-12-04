@@ -115,7 +115,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
-     * AlertIDのリストを指定してAlertをDectivateする。
+     * AlertIDのリストを指定してAlertをDeactivateする。
      * @param alertIds AlertIDのリスト
      * @param successCallback 成功時の処理
      * @param errorCallback 失敗時の処理
@@ -252,7 +252,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       let bucketSpan = job.analysis_config.bucket_span;
       let frequency = datafeed.frequency;
       let queryDelay = datafeed.query_delay;
-      let totalDelaySeconds = (parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000;
+      let totalDelaySeconds = Math.ceil((parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000);
       return `${totalDelaySeconds}s`;
     },
 

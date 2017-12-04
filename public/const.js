@@ -107,8 +107,7 @@ var constValue = {
       "send_email": {
         "transform": {
           "script": {
-            "id": "create_partition_notify_for_mail",
-            "lang": "painless"
+            "id": "create_partition_notify_for_mail"
           }
         },
         "email": {

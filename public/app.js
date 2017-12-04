@@ -10,6 +10,7 @@ import 'ui/modals';
 import 'ui/courier';
 import 'ui/tooltip';
 import 'ui/autoload/styles';
+import 'ui/react_components';
 import './less/main.less';
 import 'plugins/kibana/dashboard/saved_dashboard/saved_dashboards';
 import alertListTemplate from './templates/alertList.html';
