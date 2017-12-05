@@ -1,5 +1,11 @@
 export default function AlertSettingController($scope, $routeParams, $location, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedDashboards) {
   var vm = this;
+  vm.compareOptions = [
+    {compareType:'gte', operator:'≧'},
+    {compareType:'gt', operator:'＞'},
+    {compareType:'lte', operator:'≦'},
+    {compareType:'lt', operator:'＜'}
+  ];
   // 入力初期値
   vm.input = {
     mlJobId: '',
@@ -19,6 +25,9 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     kibanaDisplayTerm: 900,
     locale: 'Asia/Tokyo',
     mlProcessTime: '10m',
+    filterByActualValue: false,
+    actualValueThreshold: 0,
+    compareOption: vm.compareOptions[0],
     kibanaUrl: "http://localhost:5601/"
   };
   // その他の初期値
@@ -205,6 +214,9 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     vm.input.linkDashboards = data.watch.metadata.link_dashboards;
     vm.input.kibanaUrl = data.watch.metadata.kibana_url;
     vm.input.subject = data.watch.metadata.subject;
+    vm.input.filterByActualValue = data.watch.metadata.filterByActualValue;
+    vm.input.actualValueThreshold = data.watch.metadata.actualValueThreshold;
+    vm.input.compareOption = data.watch.metadata.compareOption;
     if (data.watch.trigger.schedule.hasOwnProperty('cron')) {
       vm.input.scheduleKind = 'cron';
       vm.input.triggerSchedule = data.watch.trigger.schedule.cron;

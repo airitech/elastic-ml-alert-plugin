@@ -240,6 +240,23 @@
             </div>
           </div>
           <div class="form-group">
+            <label>実際の値でフィルターする場合、条件を指定してください。</label>
+            <div>
+              <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.filterByActualValue" required="" type="checkbox">
+              <label for="filterByActualValue">実際の値でフィルターする</label>
+            </div>
+            <div class="inline-group">
+              <span>(実際の値)</span>
+              <select class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" ng-model="asCtrl.input.compareOption" ng-options="option.operator for option in asCtrl.compareOptions"></select>
+              <input class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" name="actualValueThreshold" ng-model="asCtrl.input.actualValueThreshold" required="" type="number">
+            </div>
+            <div class="hintbox">
+              <p>
+                Anomaly scoreが閾値を超えていた場合も、実際の値がこの条件を満たさない場合には通知を抑制します。
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
             <label>KibanaのURLを指定してください。</label>
             <input name="locale" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
           </div>

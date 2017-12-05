@@ -240,10 +240,22 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       body.metadata.kibana_url = metadata.kibanaUrl;
       body.metadata.locale = metadata.locale;
       body.metadata.ml_process_time = metadata.mlProcessTime;
+      body.metadata.filterByActualValue = metadata.filterByActualValue;
+      body.metadata.actualValueThreshold = metadata.actualValueThreshold;
+      body.metadata.compareOption = metadata.compareOption;
       if (metadata.scheduleKind === 'cron') {
         body.trigger.schedule = {
           cron: metadata.triggerSchedule
         };
+      }
+      if (metadata.filterByActualValue) {
+        let rangeCondition = {
+          "range": {
+            "actual": {}
+          }
+        };
+        rangeCondition.range.actual[metadata.compareOption.compareType] = "{{ctx.metadata.actualValueThreshold}}";
+        body.input.search.request.body.query.bool.must.push(rangeCondition);
       }
       $http.post(uri, body).then(successCallback, errorCallback);
     },
