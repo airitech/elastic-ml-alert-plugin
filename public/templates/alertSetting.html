@@ -161,6 +161,48 @@
           </div>
         </div>
         <div class="form-group">
+            <label>通知に含めるリンク先のSaved searchを選んでください。</label>
+            <table class="kuiTable" ng-if="asCtrl.savedSearches.length">
+              <thead>
+                <tr>
+                  <th class="kuiTableHeaderCell dashboardTitle">
+                    Title
+                  </th>
+                  <th class="kuiTableHeaderCell">
+                    Description
+                  </th>
+                  <th class="kuiTableHeaderCell deleteButton"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="savedSearch in asCtrl.savedSearches | orderBy:'name' | limitTo:20 track by savedSearch.id" class="kuiTableRow">
+                  <td class="kuiTableRowCell">
+                    <div class="kuiTableRowCell__liner">
+                      {{savedSearch.title}}
+                    </div>
+                  </td>
+                  <td class="kuiTableRowCell">
+                    <div class="kuiTableRowCell__liner">
+                      {{savedSearch.description}}
+                    </div>
+                  </td>
+                  <td class="kuiTableRowCell">
+                    <div class="kuiTableRowCell__liner">
+                      <a class="kuiButton kuiButton--danger" ng-click="asCtrl.removeSavedSearch($index)" tooltip="Remove saved search" tooltip-append-to-body="true">
+                        <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+              <div class="btn btn-default" ng-click="asCtrl.savedSearches.length || asCtrl.selectSavedSearch()" ng-disabled="asCtrl.savedSearches.length">
+                <span>Saved Search 一覧から選択</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
           <label>通知する閾値を入力してください。</label>
           <span class="sevierity-level" ng-click="asCtrl.setThreshold(75)">
             <i class="fa fa-exclamation-triangle icon-severity-critical"></i>

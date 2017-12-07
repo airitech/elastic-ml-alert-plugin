@@ -1,4 +1,4 @@
-export default function AlertSettingController($scope, $routeParams, $location, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedDashboards) {
+export default function AlertSettingController($scope, $routeParams, $location, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
   var vm = this;
   vm.compareOptions = [
     {compareType:'gte', operator:'≧'},
@@ -18,6 +18,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     mailAddressCc: [],
     mailAddressBcc: [],
     linkDashboards: [],
+    linkSavedSearches: [],
     threshold: 0,
     scheduleKind: 'cron',
     triggerSchedule: '0 * * * * ?',
@@ -36,6 +37,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     ShowDetailSetting: false
   };
   vm.dashboards = [];
+  vm.savedSearches = [];
   vm.existsAlert = false;
   vm.autoSettingEnabled = true;
   vm.frequency = '150s';
@@ -136,6 +138,13 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       title : item.title
     }));
   };
+  vm.removeSavedSearch = function(index) {
+    vm.savedSearches.splice(index, 1);
+    vm.input.linkSavedSearches = vm.savedSearches.map(item => ({
+      id : item.id,
+      title : item.title
+    }));
+  };
   vm.selectDashboard = function () {
     function select(dashboard) {
       if (!~vm.input.linkDashboards.map(item => item.id).indexOf(dashboard.id)) {
@@ -152,6 +161,25 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       showClose: true
     };
     dashboardSelectModal(
+      confirmModalOptions
+    );
+  };
+  vm.selectSavedSearch = function () {
+    function select(savedSearch) {
+      if (!~vm.input.linkSavedSearches.map(item => item.id).indexOf(savedSearch.id)) {
+        vm.savedSearches.push(savedSearch);
+        vm.input.linkSavedSearches = vm.savedSearches.map(item => ({
+          id : item.id,
+          title : item.title
+        }));
+      }
+    }
+    const confirmModalOptions = {
+      select: select,
+      title: "Saved Search 選択",
+      showClose: true
+    };
+    savedSearchSelectModal(
       confirmModalOptions
     );
   };
@@ -212,6 +240,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     vm.input.locale = data.watch.metadata.locale;
     vm.input.mlProcessTime = data.watch.metadata.ml_process_time;
     vm.input.linkDashboards = data.watch.metadata.link_dashboards;
+    vm.input.linkSavedSearches = data.watch.metadata.link_saved_searches;
     vm.input.kibanaUrl = data.watch.metadata.kibana_url;
     vm.input.subject = data.watch.metadata.subject;
     vm.input.filterByActualValue = data.watch.metadata.filterByActualValue;
@@ -236,6 +265,16 @@ export default function AlertSettingController($scope, $routeParams, $location, 
         hit => ~data.watch.metadata.link_dashboards.map(dashboard => dashboard.id).indexOf(hit.id)
       );
       vm.input.linkDashboards = vm.dashboards.map(item => ({
+        id : item.id,
+        title : item.title
+      }));
+      vm.changeJobId();
+    });
+    savedSavedSearches.find("").then(function(savedData) {
+      vm.savedSearches = savedData.hits.filter(
+        hit => ~data.watch.metadata.link_saved_searches.map(savedSearch => savedSearch.id).indexOf(hit.id)
+      );
+      vm.input.linkSavedSearches = vm.savedSearches.map(item => ({
         id : item.id,
         title : item.title
       }));
