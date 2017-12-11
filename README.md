@@ -191,6 +191,7 @@ for (def hit : ctx.payload.hits.hits) {
       message += '<br />　<a href=' + ctx.metadata.double_quate + targetFilterDiscoveryUrl + ctx.metadata.double_quate + '>値で絞り込んでSaved Searchを開く</a>';
     }
   }
+  message += '<br />';
 }
 return [ 'message' : message ];
 """
