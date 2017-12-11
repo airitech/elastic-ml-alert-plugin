@@ -234,6 +234,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       body.metadata.description = metadata.description;
       body.metadata.subject = metadata.subject;
       body.metadata.link_dashboards = metadata.linkDashboards;
+      body.metadata.link_saved_searches = metadata.linkSavedSearches;
       body.metadata.threshold = metadata.threshold;
       body.metadata.detect_interval = metadata.detectInterval;
       body.metadata.kibana_display_term = metadata.kibanaDisplayTerm;
