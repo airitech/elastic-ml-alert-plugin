@@ -1,8 +1,8 @@
-X-Pack Machine Leaning用Alert通知簡単設定プラグイン
+Elasticsearch X-Pack Machine Learning用Alert通知簡単設定プラグイン
 ====
 
 Kibana UI上で簡単に<br>
-Elasticsearch Machine Leaningの異常検知時の通知を<br>
+Elasticsearch Machine Learningの異常検知時の通知を<br>
 設定することができます。
 
 <img src="https://user-images.githubusercontent.com/33506001/33833347-b733a83c-dec2-11e7-8d26-56268543db84.png" alt="Adding" style="width: 400px;"/>
@@ -22,6 +22,7 @@ Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加
 
 ## Alert設定追加画面
 通知対象としたいML jobを選択し、通知設定を開始します。
+
 <img src="https://user-images.githubusercontent.com/33506001/33833347-b733a83c-dec2-11e7-8d26-56268543db84.png" alt="Adding" style="width: 300px;"/>
 
 ## Alert条件設定
@@ -39,7 +40,8 @@ Alertの起動タイミングなど、<br/>
 
 ## Alert一覧画面
 追加したAlert設定の一覧を表示します。
-一覧の一括削除なども可能です。
+一覧の一括削除なども可能です。<br>
+※注意：通知設定を個別に削除する機能が動作しません。<br>　削除は一括削除を利用してください。
 
 <img src="https://user-images.githubusercontent.com/33506001/33833450-0772235a-dec3-11e7-95c9-7d1f043ceb89.png" alt="list" style="width: 300px;"/>
 
@@ -233,4 +235,5 @@ For more information about any of these commands run `npm run ${task} -- --help`
 [Apache Version 2.0](https://github.com/serive/es-ml-alert/blob/master/LICENSE)
 
 # Author
-@serive
+@serive <br/>
+Twitter: @serive8
