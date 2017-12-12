@@ -10,14 +10,17 @@ import 'ui/modals';
 import 'ui/courier';
 import 'ui/tooltip';
 import 'ui/autoload/styles';
+import 'ui/react_components';
 import './less/main.less';
 import 'plugins/kibana/dashboard/saved_dashboard/saved_dashboards';
+import 'plugins/kibana/discover/saved_searches/saved_searches';
 import alertListTemplate from './templates/alertList.html';
 import alertSettingTemplate from './templates/alertSetting.html';
 import headerTemplate from './templates/common/header.html';
 
 import { alertBulkEditModal } from './modules/modals/alertBulkEditModal';
 import { dashboardSelectModal } from './modules/modals/dashboardSelectModal';
+import { savedSearchSelectModal } from './modules/modals/savedSearchSelectModal';
 
 import HeaderController from './controller/common/header.controller';
 import AlertListController from './controller/alertList.controller';

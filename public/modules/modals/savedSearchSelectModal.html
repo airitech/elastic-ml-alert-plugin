@@ -1,0 +1,63 @@
+<div class="kuiModal" style="width: 90%" data-test-subj="savedSearchSelectModal">
+  <div class="kuiModalHeader" ng-if="title">
+    <div class="kuiModalHeader__title" data-test-subj="savedSearchSelectModalTitleText">
+      {{title}}
+    </div>
+    <div ng-if="showClose" class="kuiModalHeaderCloseButton kuiIcon fa-times" data-test-subj="savedSearchSelectModalCloseButton"
+      ng-click="onClose()"></div>
+  </div>
+  <div class="kuiModalBody">
+    <div class="form-group">
+      <div class="kuiToolBar">
+        <div class="kuiToolBarSearch">
+          <div class="kuiToolBarSearchBox">
+            <div class="kuiToolBarSearchBox__icon kuiIcon fa-search"></div>
+            <input class="kuiToolBarSearchBox__input ng-pristine ng-untouched ng-valid" type="text" placeholder="Search..." aria-label="Filter"
+              ng-model="savedSearchesFilter" ng-change="searchsavedSearches()">
+          </div>
+        </div>
+      </div>
+      <table class="kuiTable" ng-if="savedSearches.length || !savedSearchesFilter">
+        <thead>
+          <tr>
+            <th class="kuiTableHeaderCell savedSearchTitle">
+              Title
+            </th>
+            <th class="kuiTableHeaderCell">
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="savedSearch in savedSearches | orderBy:'title' | limitTo:20 track by savedSearch.id" class="kuiTableRow" ng-click="select(savedSearch)">
+            <td class="kuiTableRowCell">
+              <div class="kuiTableRowCell__liner">
+                {{savedSearch.title}}
+              </div>
+            </td>
+            <td class="kuiTableRowCell">
+              <div class="kuiTableRowCell__liner">
+                {{savedSearch.description}}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 
+        kuiNoItems will be replaced with kuiTableInfo
+        https://github.com/elastic/kibana/commit/d125835d74b61d2bd0473b031c457542e33e5e26
+        -->
+      <div class="kuiPanel kuiPanel--centered kuiPanel--withToolBar" ng-if="!savedSearches.length && savedSearchesFilter">
+        <div class="kuiTableInfo kuiNoItems ">
+          No savedSearches matched your search.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kuiModalFooter">
+    <button class="kuiButton kuiButton--hollow" data-test-subj="savedSearchSelectModalCancelButton" ng-click="onCancel()">
+      {{cancelButtonText}}
+    </button>
+  </div>
+</div>

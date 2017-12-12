@@ -19,7 +19,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
           },
           "sort": [
             {
-              "_uid": {
+              "_id": {
                 "order": "asc"
               }
             }
@@ -115,7 +115,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
-     * AlertIDのリストを指定してAlertをDectivateする。
+     * AlertIDのリストを指定してAlertをDeactivateする。
      * @param alertIds AlertIDのリスト
      * @param successCallback 成功時の処理
      * @param errorCallback 失敗時の処理
@@ -234,16 +234,29 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       body.metadata.description = metadata.description;
       body.metadata.subject = metadata.subject;
       body.metadata.link_dashboards = metadata.linkDashboards;
+      body.metadata.link_saved_searches = metadata.linkSavedSearches;
       body.metadata.threshold = metadata.threshold;
       body.metadata.detect_interval = metadata.detectInterval;
       body.metadata.kibana_display_term = metadata.kibanaDisplayTerm;
       body.metadata.kibana_url = metadata.kibanaUrl;
       body.metadata.locale = metadata.locale;
       body.metadata.ml_process_time = metadata.mlProcessTime;
+      body.metadata.filterByActualValue = metadata.filterByActualValue;
+      body.metadata.actualValueThreshold = metadata.actualValueThreshold;
+      body.metadata.compareOption = metadata.compareOption;
       if (metadata.scheduleKind === 'cron') {
         body.trigger.schedule = {
           cron: metadata.triggerSchedule
         };
+      }
+      if (metadata.filterByActualValue) {
+        let rangeCondition = {
+          "range": {
+            "actual": {}
+          }
+        };
+        rangeCondition.range.actual[metadata.compareOption.compareType] = "{{ctx.metadata.actualValueThreshold}}";
+        body.input.search.request.body.query.bool.must.push(rangeCondition);
       }
       $http.post(uri, body).then(successCallback, errorCallback);
     },
@@ -252,7 +265,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       let bucketSpan = job.analysis_config.bucket_span;
       let frequency = datafeed.frequency;
       let queryDelay = datafeed.query_delay;
-      let totalDelaySeconds = (parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000;
+      let totalDelaySeconds = Math.ceil((parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000);
       return `${totalDelaySeconds}s`;
     },
 

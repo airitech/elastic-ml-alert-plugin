@@ -105,6 +105,52 @@
   padding: 7px 8px 2px 8px;
 }
 
+.form-control-inline {
+  height: 32px;
+  padding: 5px 15px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #2D2D2D;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.form-control-inline:focus {
+  border-color: #0079a5;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 121, 165, 0.6);
+}
+.form-control-inline::-moz-placeholder {
+  color: #acb6c0;
+  opacity: 1;
+}
+.form-control-inline:-ms-input-placeholder {
+  color: #acb6c0;
+}
+.form-control-inline::-webkit-input-placeholder {
+  color: #acb6c0;
+}
+.form-control-inline::-ms-expand {
+  border: 0;
+  background-color: transparent;
+}
+.form-control-inline[disabled],
+.form-control-inline[readonly],
+fieldset[disabled] .form-control {
+  background-color: #D9D9D9;
+  opacity: 1;
+}
+.form-control-inline[disabled],
+fieldset[disabled] .form-control {
+  cursor: not-allowed;
+}
+.inline-group {
+  padding: 1px 0px;
+}
+
 /* From X-Pack Machine Learning */ 
 .icon-severity-critical {
     color: #fe5050;
