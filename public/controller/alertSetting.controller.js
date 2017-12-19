@@ -1,5 +1,6 @@
-export default function AlertSettingController($scope, $routeParams, $location, docTitle, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+export default function AlertSettingController($scope, $routeParams, $location, docTitle, Notifier, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
   docTitle.change('ML Alert');
+  const notify = new Notifier({ location: 'ML Alert' });
   var vm = this;
   vm.compareOptions = [
     {compareType:'gte', operator:'≧'},
@@ -93,6 +94,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     AlertService.save(vm.input, function() {
       $location.path('/alert_list');
     }, function(error) {
+      notify.error(error);
       console.error(error);
     });
   };
