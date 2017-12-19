@@ -263,7 +263,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
 
     calculateMlProcessTime: function (job, datafeed) {
       let bucketSpan = job.analysis_config.bucket_span;
-      let frequency = datafeed.frequency;
+      let frequency = datafeed.frequency ? datafeed.frequency : bucketSpan;
       let queryDelay = datafeed.query_delay;
       let totalDelaySeconds = Math.ceil((parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000);
       return `${totalDelaySeconds}s`;
@@ -271,7 +271,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
 
     calculateKibanaDisplayTerm: function (job) {
       let bucketSpan = job.analysis_config.bucket_span;
-      let kibanaDisplayTerm = 15 * parse(bucketSpan) / 1000;
+      let kibanaDisplayTerm = 2 * parse(bucketSpan) / 1000;
       return kibanaDisplayTerm;
     }
   };
