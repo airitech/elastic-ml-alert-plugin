@@ -1,4 +1,5 @@
-export default function AlertListController($scope, $routeParams, $location, AlertService, confirmModal, Notifier, alertBulkEditModal) {
+export default function AlertListController($scope, $routeParams, $location, docTitle, AlertService, confirmModal, Notifier, alertBulkEditModal) {
+  docTitle.change('ML Alert');
   const notify = new Notifier({ location: 'ML Alert' });
   $scope.selectedItems = [];
   $scope.data = [];

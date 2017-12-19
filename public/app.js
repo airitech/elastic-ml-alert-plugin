@@ -9,6 +9,7 @@ import 'ui/es';
 import 'ui/modals';
 import 'ui/courier';
 import 'ui/tooltip';
+import 'ui/doc_title';
 import 'ui/autoload/styles';
 import 'ui/react_components';
 import './less/main.less';

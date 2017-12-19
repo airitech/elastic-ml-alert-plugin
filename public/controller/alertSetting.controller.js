@@ -1,4 +1,5 @@
-export default function AlertSettingController($scope, $routeParams, $location, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+export default function AlertSettingController($scope, $routeParams, $location, docTitle, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+  docTitle.change('ML Alert');
   var vm = this;
   vm.compareOptions = [
     {compareType:'gte', operator:'≧'},
