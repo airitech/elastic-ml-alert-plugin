@@ -272,7 +272,7 @@
           </div>
           <div class="form-group">
             <label>MLの異常検知結果が確定するまでの遅延時間を入力してください。</label>
-            <input name="mlProcessTime" ng-model="asCtrl.input.mlProcessTime" required="" type="text" class="form-control">
+            <input name="mlProcessTime" ng-model="asCtrl.input.mlProcessTime" required="" type="text" class="form-control" ng-pattern="/^([1-9][0-9]*|0)[yMwdhms]$/">
             <div class="hintbox">
               <p>
                 bucket_span + frequency + query_delay + (ML処理時間)
@@ -280,7 +280,13 @@
                 この値を小さくし過ぎると、異常検知結果が正しく通知されません。
               </p>
             </div>
-          </div>
+            <div class="hintbox" ng-show="form.mlProcessTime.$error.pattern">
+                <p>
+                  入力の形式が正しくありません。<br />
+                  正しい入力の例："60s", "10m", "4h", "1d"
+                </p>
+              </div>
+            </div>
           <div class="form-group">
             <label>実際の値でフィルターする場合、条件を指定してください。</label>
             <div>
@@ -304,7 +310,7 @@
           </div>
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-default">
+          <button type="submit" class="btn btn-default" ng-disabled="form.$invalid">
           <span>{{asCtrl.existsAlert ? "Update" : "Save"}}</span>
         </button>
         </div>
