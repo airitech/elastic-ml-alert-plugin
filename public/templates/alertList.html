@@ -73,7 +73,7 @@
         <tr class="kuiTableRow" ng-repeat-start="(jobId, alerts) in mlJobAlerts track by jobId">
           <td class="kuiTableRowCell category" colspan="7">
             <div class="kuiTableRowCell__liner">
-              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!({{jobId}})),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
+              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!('{{jobId}}')),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
             </div>
           </td>
         </tr>
