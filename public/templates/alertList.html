@@ -47,7 +47,9 @@
         <tr>
           <!-- ngRepeat: col in columns -->
           <th class="kuiTableHeaderCell kuiTableHeaderCell--checkBox">
-            <input type="checkbox" class="kuiCheckBox" ng-checked="areAllRowsChecked()" ng-click="toggleAll()">
+            <div class="kuiTableHeaderCell__liner">
+              <input type="checkbox" class="kuiCheckBox" ng-checked="areAllRowsChecked()" ng-click="toggleAll()">
+            </div>
           </th>
           <th class="kuiTableHeaderCell alertId">
             <span class="kuiTableHeaderCell__liner">アラートID</span>
