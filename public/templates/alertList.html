@@ -124,13 +124,19 @@
           </td>
           <td class="kuiTableRowCell">
             <div class="kuiTableRowCell__liner">
-              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Enable alert" ng-if="!alert._source.status.state.active" ng-click="activateAlert($event)" value="{{alert._id}}">
+                <i aria-hidden="true" class="fa fa-play"></i>
+              </button>
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Disable alert" ng-if="alert._source.status.state.active" ng-click="deactivateAlert($event)" value="{{alert._id}}">
+                  <i aria-hidden="true" class="fa fa-stop"></i>
+                </button>  
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-pencil-square-o"></i>
               </button>
-              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-clone"></i>
               </button>
-              <button class="kuiButton kuiButton--danger btn-xs" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--danger kuiButton--small" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-trash"></i>
               </button>
             </div>

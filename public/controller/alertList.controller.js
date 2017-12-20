@@ -23,6 +23,26 @@ export default function AlertListController($scope, $routeParams, $location, doc
         return prev;
       }, {});
   };
+  $scope.activateAlert = function ($event) {
+    var alertId = $event.currentTarget.value;
+    AlertService.activate([alertId], function (successCount, totalCount) {
+      notify.info(`有効化しました`);
+    }, function (failCount, totalCount) {
+      notify.error(`有効化に失敗しました`);
+    })
+      .then($scope.init)
+      .catch(error => notify.error(error));
+  };
+  $scope.deactivateAlert = function ($event) {
+    var alertId = $event.currentTarget.value;
+    AlertService.deactivate([alertId], function (successCount, totalCount) {
+      notify.info(`無効化しました`);
+    }, function (failCount, totalCount) {
+      notify.error(`無効化に失敗しました`);
+    })
+      .then($scope.init)
+      .catch(error => notify.error(error));
+  };
   $scope.moveCreate = function () {
     $location.path('/alert_setting');
   };
