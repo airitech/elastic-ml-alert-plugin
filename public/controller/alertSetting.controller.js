@@ -229,6 +229,13 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     }
   }
 
+  function getDefault(value, defaultValue) {
+    if (typeof value === "undefined") {
+      return defaultValue;
+    }
+    return value;
+  }
+
   function setInput(data) {
     vm.autoSettingEnabled = false;
     if (!$routeParams.clone) {
@@ -237,18 +244,22 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     }
     vm.input.mlJobId = data.watch.metadata.job_id;
     vm.input.description = data.watch.metadata.description;
-    vm.input.threshold = data.watch.metadata.threshold;
-    vm.input.detectInterval = data.watch.metadata.detect_interval;
-    vm.input.kibanaDisplayTerm = data.watch.metadata.kibana_display_term;
-    vm.input.locale = data.watch.metadata.locale;
-    vm.input.mlProcessTime = data.watch.metadata.ml_process_time;
-    vm.input.linkDashboards = data.watch.metadata.link_dashboards;
-    vm.input.linkSavedSearches = data.watch.metadata.link_saved_searches;
-    vm.input.kibanaUrl = data.watch.metadata.kibana_url;
-    vm.input.subject = data.watch.metadata.subject;
-    vm.input.filterByActualValue = data.watch.metadata.filterByActualValue;
-    vm.input.actualValueThreshold = data.watch.metadata.actualValueThreshold;
-    vm.input.compareOption = data.watch.metadata.compareOption;
+    vm.input.threshold = getDefault(data.watch.metadata.threshold, vm.input.threshold);
+    vm.input.detectInterval = getDefault(data.watch.metadata.detect_interval, vm.input.detectInterval);
+    vm.input.kibanaDisplayTerm = getDefault(data.watch.metadata.kibana_display_term, vm.input.kibanaDisplayTerm);
+    vm.input.locale = getDefault(data.watch.metadata.locale, vm.input.locale);
+    vm.input.mlProcessTime = getDefault(data.watch.metadata.ml_process_time, vm.input.mlProcessTime);
+    vm.input.linkDashboards = getDefault(data.watch.metadata.link_dashboards, vm.input.linkDashboards);
+    vm.input.linkSavedSearches = getDefault(data.watch.metadata.link_saved_searches, vm.input.linkSavedSearches);
+    vm.input.kibanaUrl = getDefault(data.watch.metadata.kibana_url, vm.input.kibanaUrl);
+    vm.input.subject = getDefault(data.watch.metadata.subject, vm.input.subject);
+    vm.input.filterByActualValue = getDefault(data.watch.metadata.filterByActualValue, vm.input.filterByActualValue);
+    vm.input.actualValueThreshold = getDefault(data.watch.metadata.actualValueThreshold, vm.input.actualValueThreshold);
+    let compareOptionIndex = 0;
+    if (vm.compareOptions) {
+      compareOptionIndex = Math.max(0, vm.compareOptions.map(option => option.compareType).indexOf(data.watch.metadata.compareOption.compareType));
+    }
+    vm.input.compareOption = vm.compareOptions[compareOptionIndex];
     if (data.watch.trigger.schedule.hasOwnProperty('cron')) {
       vm.input.scheduleKind = 'cron';
       vm.input.triggerSchedule = data.watch.trigger.schedule.cron;
@@ -273,7 +284,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       }));
       vm.changeJobId();
     });
-    savedSavedSearches.find("").then(function(savedData) {
+    savedSearches.find("").then(function(savedData) {
       vm.savedSearches = savedData.hits.filter(
         hit => ~data.watch.metadata.link_saved_searches.map(savedSearch => savedSearch.id).indexOf(hit.id)
       );
