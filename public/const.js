@@ -2,7 +2,9 @@ var constValue = {
   names: {
     appName: 'ml_alert',
     mlIndexName: '.ml-anomalies-*',
-    indexName: '.ml-alert'
+    indexName: '.ml-alert',
+    scriptForMail: 'create_partition_notify_for_mail',
+    scriptForSlack: 'create_partition_notify_for_slack'
   },
   displayNames: {
     'alert_list': '設定通知一覧',
@@ -32,6 +34,14 @@ var constValue = {
     editWatch: {
       method: 'PUT',
       path: '_xpack/watcher/watch/'
+    },
+    getScript: {
+      method: 'GET',
+      path: '_scripts/'
+    },
+    putScript: {
+      method: 'PUT',
+      path: '_scripts/'
     }
   },
   alert: {

@@ -1,4 +1,4 @@
-export default function AlertService($http, mlaConst, parse, EsDevToolService, es) {
+export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script) {
   const PATHS = mlaConst.paths;
   var CPATH = '..' + PATHS.console.path;
   var CMETHOD = PATHS.console.method;
@@ -210,6 +210,28 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
         if (failCount > 0) {
           errorCallback(failCount, totalCount);
         }
+      });
+    },
+    /**
+     * check if painless script exists
+     * @param successCallback callback function for success
+     * @param errorCallback callback function for failure
+     */
+    checkScript: function (successCallback, errorCallback) {
+      let scriptForMail = mlaConst.names.scriptForMail;
+      let queryString = EsDevToolService.createQuery(PATHS.getScript.method, PATHS.getScript.path + scriptForMail);
+      let uri = CPATH + '?' + queryString;
+      $http.post(uri).then(successCallback, function(error) {
+        console.info("try to put script");
+        let putScriptQuery = EsDevToolService.createQuery(PATHS.putScript.method, PATHS.putScript.path + scriptForMail);
+        let putScriptUri = CPATH + '?' + putScriptQuery;
+        let body = {
+          script: {
+            lang: "painless",
+            source: script
+          }
+        };
+        $http.post(putScriptUri, body).then(successCallback, errorCallback);
       });
     },
     /**

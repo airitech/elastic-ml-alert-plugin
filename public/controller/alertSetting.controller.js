@@ -91,9 +91,14 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     vm.internal.ShowDetailSetting = false;
   };
   vm.save = function () {
-    AlertService.save(vm.input, function() {
-      $location.path('/alert_list');
-    }, function(error) {
+    AlertService.checkScript(function(){
+      AlertService.save(vm.input, function() {
+        $location.path('/alert_list');
+      }, function(error) {
+        notify.error(error);
+        console.error(error);
+      });
+    }, function(error){
       notify.error(error);
       console.error(error);
     });
