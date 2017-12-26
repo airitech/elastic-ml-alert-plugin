@@ -183,6 +183,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
         let alertId = data._id;
         let body = data.watch;
         if (input.editMail) {
+          body.actions.send_email = mlaConst.mailAction;
           body.actions.send_email.email.to = input.mailAddressTo.map(item => item.value);
           body.actions.send_email.email.cc = input.mailAddressCc.map(item => item.value);
           body.actions.send_email.email.bcc = input.mailAddressBcc.map(item => item.value);

@@ -61,7 +61,7 @@
               <span class="kuiTableHeaderCell__liner">状態</span>
           </th>
           <th class="kuiTableHeaderCell">
-              <span class="kuiTableHeaderCell__liner">メール</span>
+              <span class="kuiTableHeaderCell__liner">通知先</span>
           </th>
           <th class="kuiTableHeaderCell">
               <span class="kuiTableHeaderCell__liner">リンクDashboard</span>
@@ -116,7 +116,13 @@
             <div class="kuiTableRowCell__liner multi-line" ng-repeat="mail in alert._source.actions.send_email.email.bcc track by $index" tooltip="{{mail}}">
               {{mail}}
             </div>
-          </td>
+            <div class="kuiTableRowCell__liner multi-line-title" ng-if="alert._source.actions.notify_slack.slack.message.to.length > 0">
+              Slack:
+            </div>
+            <div class="kuiTableRowCell__liner" ng-repeat="slackTo in alert._source.actions.notify_slack.slack.message.to track by $index" ng-class="{'multi-line': alert._source.actions.notify_slack.slack.message.to.length > 1}" tooltip="{{slackTo}}">
+              {{slackTo}}
+            </div>
+            </td>
           <td class="kuiTableRowCell">
             <div class="kuiTableRowCell__liner" ng-repeat="dashboard in alert._source.metadata.link_dashboards | orderBy:'title' track by dashboard.id" ng-class="{'multi-line': alert._source.metadata.link_dashboards.length > 1}" tooltip="{{dashboard.title}}">
               {{dashboard.title}}

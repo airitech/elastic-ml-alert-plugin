@@ -49,6 +49,23 @@ var constValue = {
     notification: 'mail',
     processTime: '3m'
   },
+  mailAction: {
+    "transform": {
+      "script": {
+        "id": "create_partition_notify_for_mail"
+      }
+    },
+    "email": {
+      "profile": "standard",
+      "to": [
+        "sample@sample.com"
+      ],
+      "subject": "{{ctx.metadata.subject}}",
+      "body": {
+        "html": "{{ctx.payload.message}}"
+      }
+    },
+  },
   alertTemplate: {
     "trigger": {
       "schedule": {
