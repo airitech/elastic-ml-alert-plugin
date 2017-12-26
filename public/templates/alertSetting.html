@@ -73,50 +73,81 @@
           <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="Elasticsearch ML 異常検知通知">
         </div>
         <div class="form-group">
-          <label>メールアドレスを入力してください。</label><br />
-          <label>To:</label>
-          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressTo track by $index">
-            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
-              size="30">
-            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteTo($index)" aria-label="Remove mailto input field" tooltip="Remove input field"
-              tooltip-append-to-body="true" ng-if="$index > 0">
-              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+          <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack">
+          <label for="filterByActualValue">メール通知</label>
+        </div>
+        <div class="sub-form">
+          <div class="form-group">
+            <label>メールアドレスを入力してください。</label><br />
+            <label>To:</label>
+            <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressTo track by $index">
+              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+                size="30" ng-disabled="!asCtrl.input.sendMail">
+              <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteTo($index)" aria-label="Remove mailto input field" tooltip="Remove input field"
+                tooltip-append-to-body="true" ng-if="$index > 0" ng-disabled="!asCtrl.input.sendMail">
+                <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+              </a>
+            </div>
+            <a class="kuiButton kuiButton--primary" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.addTo()" aria-label="Add mailto input field" tooltip="Add input field"
+              tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
             </a>
           </div>
-          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addTo()" aria-label="Add mailto input field" tooltip="Add input field"
-            tooltip-append-to-body="true">
-            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
-          </a>
+          <div class="form-group">
+            <label>Cc:</label>
+            <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressCc track by $index">
+              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+                size="30" ng-disabled="!asCtrl.input.sendMail">
+              <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
+                tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
+                <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+              </a>
+            </div>
+            <a class="kuiButton kuiButton--primary" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.addCc()" aria-label="Add mail cc input field" tooltip="Add input field"
+              tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+            </a>
+          </div>
+          <div class="form-group">
+            <label>Bcc:</label>
+            <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressBcc track by $index">
+              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+                size="30" ng-disabled="!asCtrl.input.sendMail">
+              <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
+                tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
+                <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+              </a>
+            </div>
+            <a class="kuiButton kuiButton--primary" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.addBcc()" aria-label="Add mail bcc input field" tooltip="Add input field"
+              tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+            </a>
+          </div>
         </div>
         <div class="form-group">
-          <label>Cc:</label>
-          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressCc track by $index">
-            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
-              size="30">
-            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
-              tooltip-append-to-body="true">
-              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
-            </a>
-          </div>
-          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addCc()" aria-label="Add mail cc input field" tooltip="Add input field"
-            tooltip-append-to-body="true">
-            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
-          </a>
+          <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail">
+          <label for="filterByActualValue">Slack通知</label>
         </div>
-        <div class="form-group">
-          <label>Bcc:</label>
-          <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressBcc track by $index">
-            <input name="mailAddress" ng-model="mail.value" required="" type="text" class="form-control" placeholder="sample@sample.com"
-              size="30">
-            <a class="kuiButton kuiButton--danger" ng-click="asCtrl.deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
-              tooltip-append-to-body="true">
-              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+        <div class="sub-form">
+          <div class="form-group">
+            <label>Slackの通知先を入力してください。</label>
+            <div class="form-inline" ng-repeat="slackTo in asCtrl.input.slackTo track by $index">
+              <input name="slackTarget" ng-model="slackTo.value" ng-required="asCtrl.input.notifySlack" type="text" class="form-control" placeholder="#channel"
+                size="30" ng-disabled="!asCtrl.input.notifySlack">
+              <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.notifySlack}" ng-click="!asCtrl.input.notifySlack || asCtrl.deleteSlackTo($index)" aria-label="Remove slack target field" tooltip="Remove"
+                tooltip-append-to-body="true" ng-if="$index > 0" ng-disabled="!asCtrl.input.notifySlack">
+                <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+              </a>
+            </div>
+            <a class="kuiButton kuiButton--primary" ng-class="{'kuiButton-isDisabled': !asCtrl.input.notifySlack}" ng-click="!asCtrl.input.notifySlack || asCtrl.addSlackTo()" aria-label="Add slack target field" tooltip="Add slack target field"
+              tooltip-append-to-body="true" ng-disabled="!asCtrl.input.notifySlack">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
             </a>
           </div>
-          <a class="kuiButton kuiButton--primary" ng-click="asCtrl.addBcc()" aria-label="Add mail bcc input field" tooltip="Add input field"
-            tooltip-append-to-body="true">
-            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
-          </a>
+          <div class="form-group">
+            <label>elasticsearch.ymlに設定したSlackのaccountを入力してください。（空の場合、デフォルトアカウントを使用します）</label>
+            <input name="slackAccount" ng-model="asCtrl.input.slackAccount" type="text" class="form-control" placeholder="" ng-disabled="!asCtrl.input.notifySlack">
+          </div>
         </div>
         <div class="form-group">
           <label>通知に含めるリンク先のDashboardを選んでください。</label>

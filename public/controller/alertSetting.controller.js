@@ -14,11 +14,17 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     alertId: '',
     description: '',
     subject: 'Elasticsearch ML 異常検知通知',
+    sendMail: true,
     mailAddressTo: [
       {value: ''}
     ],
     mailAddressCc: [],
     mailAddressBcc: [],
+    notifySlack: false,
+    slackAccount: '',
+    slackTo: [
+      {value: ''}
+    ],
     linkDashboards: [],
     linkSavedSearches: [],
     threshold: 0,
@@ -138,6 +144,12 @@ export default function AlertSettingController($scope, $routeParams, $location, 
   };
   vm.deleteBcc = function(index) {
     vm.input.mailAddressBcc.splice(index, 1);
+  };
+  vm.addSlackTo = function() {
+    vm.input.slackTo.push({value: ''});
+  };
+  vm.deleteSlackTo = function(index) {
+    vm.input.slackTo.splice(index, 1);
   };
   vm.removeDashboard = function(index) {
     vm.dashboards.splice(index, 1);
@@ -272,12 +284,24 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       vm.input.scheduleKind = 'interval';
       vm.input.triggerSchedule = data.watch.trigger.schedule.interval;
     }
-    vm.input.mailAddressTo = data.watch.actions.send_email.email.to.map(address => ({value:address}));
-    if (data.watch.actions.send_email.email.cc) {
-      vm.input.mailAddressCc = data.watch.actions.send_email.email.cc.map(address => ({value:address}));
+    if (data.watch.actions.send_email) {
+      vm.input.sendMail = true;
+      vm.input.mailAddressTo = data.watch.actions.send_email.email.to.map(address => ({value:address}));
+      if (data.watch.actions.send_email.email.cc) {
+        vm.input.mailAddressCc = data.watch.actions.send_email.email.cc.map(address => ({value:address}));
+      }
+      if (data.watch.actions.send_email.email.bcc) {
+        vm.input.mailAddressBcc = data.watch.actions.send_email.email.bcc.map(address => ({value:address}));
+      }
+    } else {
+      vm.input.sendMail = false;
     }
-    if (data.watch.actions.send_email.email.bcc) {
-      vm.input.mailAddressBcc = data.watch.actions.send_email.email.bcc.map(address => ({value:address}));
+    if (data.watch.actions.notify_slack && data.watch.actions.notify_slack.slack.message.to) {
+      vm.input.notifySlack = true;
+      vm.input.slackAccount = getDefault(data.watch.actions.notify_slack.slack.account, vm.input.slackAccount);
+      vm.input.slackTo = data.watch.actions.notify_slack.slack.message.to.map(slackTarget => ({value:slackTarget}));
+    } else {
+      vm.input.notifySlack = false;
     }
     savedDashboards.find("").then(function(savedData) {
       vm.dashboards = savedData.hits.filter(

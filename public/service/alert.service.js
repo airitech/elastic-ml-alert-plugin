@@ -244,13 +244,25 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       let queryString = EsDevToolService.createQuery(PATHS.editWatch.method, PATHS.editWatch.path + metadata.alertId);
       let uri = CPATH + '?' + queryString;
       let body = JSON.parse(JSON.stringify(mlaConst.alertTemplate));
-      // templateの{{#toJson}}が使えなかったので直接入れる
-      body.actions.send_email.email.to = metadata.mailAddressTo.map(item => item.value);
-      if (metadata.mailAddressCc.length > 0) {
-        body.actions.send_email.email.cc = metadata.mailAddressCc.map(item => item.value);
+      if (metadata.sendMail) {
+        // templateの{{#toJson}}が使えなかったので直接入れる
+        body.actions.send_email.email.to = metadata.mailAddressTo.map(item => item.value);
+        if (metadata.mailAddressCc.length > 0) {
+          body.actions.send_email.email.cc = metadata.mailAddressCc.map(item => item.value);
+        }
+        if (metadata.mailAddressBcc.length > 0) {
+          body.actions.send_email.email.bcc = metadata.mailAddressBcc.map(item => item.value);
+        }
+      } else {
+        delete body.actions.send_email;
       }
-      if (metadata.mailAddressBcc.length > 0) {
-        body.actions.send_email.email.bcc = metadata.mailAddressBcc.map(item => item.value);
+      if (metadata.notifySlack) {
+        body.actions.notify_slack.slack.message.to = metadata.slackTo.map(item => item.value);
+        if (metadata.slackAccount != '') {
+          body.actions.notify_slack.slack.account = metadata.slackAccount;
+        }
+      } else {
+        delete body.actions.notify_slack;
       }
       body.metadata.job_id = metadata.mlJobId;
       body.metadata.description = metadata.description;
