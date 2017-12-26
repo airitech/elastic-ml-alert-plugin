@@ -1,7 +1,23 @@
-export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script) {
+export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script, scriptSlack) {
   const PATHS = mlaConst.paths;
   var CPATH = '..' + PATHS.console.path;
   var CMETHOD = PATHS.console.method;
+  function checkScript(scriptName, scriptSource, successCallback, errorCallback) {
+    let queryString = EsDevToolService.createQuery(PATHS.getScript.method, PATHS.getScript.path + scriptName);
+    let uri = CPATH + '?' + queryString;
+    $http.post(uri).then(successCallback, function(error) {
+      console.info("try to put script " + scriptName);
+      let putScriptQuery = EsDevToolService.createQuery(PATHS.putScript.method, PATHS.putScript.path + scriptName);
+      let putScriptUri = CPATH + '?' + putScriptQuery;
+      let body = {
+        script: {
+          lang: "painless",
+          source: scriptSource
+        }
+      };
+      $http.post(putScriptUri, body).then(successCallback, errorCallback);
+    });
+  }
   return {
     /**
      * MLA用のAlert情報一覧を取得する。
@@ -217,22 +233,12 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
      * @param successCallback callback function for success
      * @param errorCallback callback function for failure
      */
-    checkScript: function (successCallback, errorCallback) {
+    checkScripts: function (successCallback, errorCallback) {
       let scriptForMail = mlaConst.names.scriptForMail;
-      let queryString = EsDevToolService.createQuery(PATHS.getScript.method, PATHS.getScript.path + scriptForMail);
-      let uri = CPATH + '?' + queryString;
-      $http.post(uri).then(successCallback, function(error) {
-        console.info("try to put script");
-        let putScriptQuery = EsDevToolService.createQuery(PATHS.putScript.method, PATHS.putScript.path + scriptForMail);
-        let putScriptUri = CPATH + '?' + putScriptQuery;
-        let body = {
-          script: {
-            lang: "painless",
-            source: script
-          }
-        };
-        $http.post(putScriptUri, body).then(successCallback, errorCallback);
-      });
+      let scriptForSlack = mlaConst.names.scriptForSlack;
+      checkScript(scriptForMail, script, function() {
+        checkScript(scriptForSlack, scriptSlack, successCallback, errorCallback);
+      }, errorCallback);
     },
     /**
      * Alertを作成して保存する
