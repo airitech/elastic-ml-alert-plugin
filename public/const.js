@@ -64,7 +64,27 @@ var constValue = {
       "body": {
         "html": "{{ctx.payload.message}}"
       }
+    }
+  },
+  slackAction: {
+    "transform": {
+      "script": {
+        "id": "create_partition_notify_for_slack"
+      }
     },
+    "slack" : {
+      "message" : {
+        "to" : [],
+        "text": "Elasticsearch ML Anomaly Detection",
+        "attachments" : [
+          {
+            "title": "{{ctx.payload.severity}}",
+            "text": "{{ctx.payload.message}}",
+            "color": "{{ctx.payload.severityColor}}"
+          }
+        ]
+      }
+    }
   },
   alertTemplate: {
     "trigger": {

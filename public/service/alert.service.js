@@ -182,11 +182,21 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
         let data = res["data"];
         let alertId = data._id;
         let body = data.watch;
-        if (input.editMail) {
+        if (input.editMail && input.mailAddressTo[0].value != "") {
           body.actions.send_email = mlaConst.mailAction;
           body.actions.send_email.email.to = input.mailAddressTo.map(item => item.value);
           body.actions.send_email.email.cc = input.mailAddressCc.map(item => item.value);
           body.actions.send_email.email.bcc = input.mailAddressBcc.map(item => item.value);
+        }
+        if (input.editSlack && input.slackTo[0].value != "") {
+          body.actions.notify_slack = mlaConst.slackAction;
+          body.actions.notify_slack.slack.message.to = input.slackTo.map(item => item.value);
+        }
+        if (input.editMail && input.mailAddressTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+          delete body.actions.send_email;
+        }
+        if (input.editSlack && input.slackTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+          delete body.actions.notify_slack;
         }
         if (input.editDashboard) {
           body.metadata.link_dashboards = input.linkDashboards;
