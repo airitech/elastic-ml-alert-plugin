@@ -2,7 +2,9 @@ var constValue = {
   names: {
     appName: 'ml_alert',
     mlIndexName: '.ml-anomalies-*',
-    indexName: '.ml-alert'
+    indexName: '.ml-alert',
+    scriptForMail: 'create_partition_notify_for_mail',
+    scriptForSlack: 'create_partition_notify_for_slack'
   },
   displayNames: {
     'alert_list': '設定通知一覧',
@@ -32,12 +34,57 @@ var constValue = {
     editWatch: {
       method: 'PUT',
       path: '_xpack/watcher/watch/'
+    },
+    getScript: {
+      method: 'GET',
+      path: '_scripts/'
+    },
+    putScript: {
+      method: 'PUT',
+      path: '_scripts/'
     }
   },
   alert: {
     threshold: 40,
     notification: 'mail',
     processTime: '3m'
+  },
+  mailAction: {
+    "transform": {
+      "script": {
+        "id": "create_partition_notify_for_mail"
+      }
+    },
+    "email": {
+      "profile": "standard",
+      "to": [
+        "sample@sample.com"
+      ],
+      "subject": "{{ctx.metadata.subject}}",
+      "body": {
+        "html": "{{ctx.payload.message}}"
+      }
+    }
+  },
+  slackAction: {
+    "transform": {
+      "script": {
+        "id": "create_partition_notify_for_slack"
+      }
+    },
+    "slack" : {
+      "message" : {
+        "to" : [],
+        "text": "Elasticsearch ML Anomaly Detection",
+        "attachments" : [
+          {
+            "title": "{{ctx.payload.severity}}",
+            "text": "{{ctx.payload.message}}",
+            "color": "{{ctx.payload.severityColor}}"
+          }
+        ]
+      }
+    }
   },
   alertTemplate: {
     "trigger": {
@@ -118,6 +165,26 @@ var constValue = {
           "subject": "{{ctx.metadata.subject}}",
           "body": {
             "html": "{{ctx.payload.message}}"
+          }
+        }
+      },
+      "notify_slack": {
+        "transform": {
+          "script": {
+            "id": "create_partition_notify_for_slack"
+          },
+        },
+        "slack" : {
+          "message" : {
+            "to" : [],
+            "text": "Elasticsearch ML Anomaly Detection",
+            "attachments" : [
+              {
+                "title": "{{ctx.payload.severity}}",
+                "text": "{{ctx.payload.message}}",
+                "color": "{{ctx.payload.severityColor}}"
+              }
+            ]
           }
         }
       }

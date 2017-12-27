@@ -82,6 +82,10 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
       mailAddressBcc: [],
       linkDashboards: [],
       editMail: false,
+      slackTo: [
+        {value: ''}
+      ],
+      editSlack: false,
       editDashboard: false
     };
     confirmScope.dashboards = [];
@@ -128,8 +132,17 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
     confirmScope.deleteBcc = function(index) {
       confirmScope.input.mailAddressBcc.splice(index, 1);
     };
+    confirmScope.addSlackTo = function() {
+      confirmScope.input.slackTo.push({value: ''});
+    };
+    confirmScope.deleteSlackTo = function(index) {
+      confirmScope.input.slackTo.splice(index, 1);
+    };
     confirmScope.toggleEditMail = function(index) {
       confirmScope.input.editMail = !confirmScope.input.editMail;
+    };
+    confirmScope.toggleEditSlack = function(index) {
+      confirmScope.input.editSlack = !confirmScope.input.editSlack;
     };
     confirmScope.toggleEditDashboard = function(index) {
       confirmScope.input.editDashboard = !confirmScope.input.editDashboard;

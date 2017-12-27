@@ -47,25 +47,27 @@
         <tr>
           <!-- ngRepeat: col in columns -->
           <th class="kuiTableHeaderCell kuiTableHeaderCell--checkBox">
-            <input type="checkbox" class="kuiCheckBox" ng-checked="areAllRowsChecked()" ng-click="toggleAll()">
+            <div class="kuiTableHeaderCell__liner">
+              <input type="checkbox" class="kuiCheckBox" ng-checked="areAllRowsChecked()" ng-click="toggleAll()">
+            </div>
           </th>
           <th class="kuiTableHeaderCell alertId">
-            アラートID
+            <span class="kuiTableHeaderCell__liner">アラートID</span>
           </th>
           <th class="kuiTableHeaderCell description">
-            概要
+            <span class="kuiTableHeaderCell__liner">概要</span>
           </th>
           <th class="kuiTableHeaderCell state">
-            状態
+              <span class="kuiTableHeaderCell__liner">状態</span>
           </th>
           <th class="kuiTableHeaderCell">
-            メール
+              <span class="kuiTableHeaderCell__liner">通知先</span>
           </th>
           <th class="kuiTableHeaderCell">
-            リンクDashboard
+              <span class="kuiTableHeaderCell__liner">リンクDashboard</span>
           </th>
           <th class="kuiTableHeaderCell actions">
-            Actions
+              <span class="kuiTableHeaderCell__liner">Actions</span>
           </th>
         </tr>
       </thead>
@@ -73,7 +75,7 @@
         <tr class="kuiTableRow" ng-repeat-start="(jobId, alerts) in mlJobAlerts track by jobId">
           <td class="kuiTableRowCell category" colspan="7">
             <div class="kuiTableRowCell__liner">
-              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!({{jobId}})),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
+              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!('{{jobId}}')),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
             </div>
           </td>
         </tr>
@@ -114,7 +116,13 @@
             <div class="kuiTableRowCell__liner multi-line" ng-repeat="mail in alert._source.actions.send_email.email.bcc track by $index" tooltip="{{mail}}">
               {{mail}}
             </div>
-          </td>
+            <div class="kuiTableRowCell__liner multi-line-title" ng-if="alert._source.actions.notify_slack.slack.message.to.length > 0">
+              Slack:
+            </div>
+            <div class="kuiTableRowCell__liner" ng-repeat="slackTo in alert._source.actions.notify_slack.slack.message.to track by $index" ng-class="{'multi-line': alert._source.actions.notify_slack.slack.message.to.length > 1}" tooltip="{{slackTo}}">
+              {{slackTo}}
+            </div>
+            </td>
           <td class="kuiTableRowCell">
             <div class="kuiTableRowCell__liner" ng-repeat="dashboard in alert._source.metadata.link_dashboards | orderBy:'title' track by dashboard.id" ng-class="{'multi-line': alert._source.metadata.link_dashboards.length > 1}" tooltip="{{dashboard.title}}">
               {{dashboard.title}}
@@ -122,13 +130,19 @@
           </td>
           <td class="kuiTableRowCell">
             <div class="kuiTableRowCell__liner">
-              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Enable alert" ng-if="!alert._source.status.state.active" ng-click="activateAlert($event)" value="{{alert._id}}">
+                <i aria-hidden="true" class="fa fa-play"></i>
+              </button>
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Disable alert" ng-if="alert._source.status.state.active" ng-click="deactivateAlert($event)" value="{{alert._id}}">
+                  <i aria-hidden="true" class="fa fa-stop"></i>
+                </button>  
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-pencil-square-o"></i>
               </button>
-              <button class="kuiButton kuiButton--hollow btn-xs" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-clone"></i>
               </button>
-              <button class="kuiButton kuiButton--danger btn-xs" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--danger kuiButton--small" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-trash"></i>
               </button>
             </div>

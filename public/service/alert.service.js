@@ -1,7 +1,23 @@
-export default function AlertService($http, mlaConst, parse, EsDevToolService, es) {
+export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script, scriptSlack) {
   const PATHS = mlaConst.paths;
   var CPATH = '..' + PATHS.console.path;
   var CMETHOD = PATHS.console.method;
+  function checkScript(scriptName, scriptSource, successCallback, errorCallback) {
+    let queryString = EsDevToolService.createQuery(PATHS.getScript.method, PATHS.getScript.path + scriptName);
+    let uri = CPATH + '?' + queryString;
+    $http.post(uri).then(successCallback, function(error) {
+      console.info("try to put script " + scriptName);
+      let putScriptQuery = EsDevToolService.createQuery(PATHS.putScript.method, PATHS.putScript.path + scriptName);
+      let putScriptUri = CPATH + '?' + putScriptQuery;
+      let body = {
+        script: {
+          lang: "painless",
+          source: scriptSource
+        }
+      };
+      $http.post(putScriptUri, body).then(successCallback, errorCallback);
+    });
+  }
   return {
     /**
      * MLA用のAlert情報一覧を取得する。
@@ -166,10 +182,21 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
         let data = res["data"];
         let alertId = data._id;
         let body = data.watch;
-        if (input.editMail) {
+        if (input.editMail && input.mailAddressTo[0].value != "") {
+          body.actions.send_email = mlaConst.mailAction;
           body.actions.send_email.email.to = input.mailAddressTo.map(item => item.value);
           body.actions.send_email.email.cc = input.mailAddressCc.map(item => item.value);
           body.actions.send_email.email.bcc = input.mailAddressBcc.map(item => item.value);
+        }
+        if (input.editSlack && input.slackTo[0].value != "") {
+          body.actions.notify_slack = mlaConst.slackAction;
+          body.actions.notify_slack.slack.message.to = input.slackTo.map(item => item.value);
+        }
+        if (input.editMail && input.mailAddressTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+          delete body.actions.send_email;
+        }
+        if (input.editSlack && input.slackTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+          delete body.actions.notify_slack;
         }
         if (input.editDashboard) {
           body.metadata.link_dashboards = input.linkDashboards;
@@ -213,6 +240,18 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
+     * check if painless script exists
+     * @param successCallback callback function for success
+     * @param errorCallback callback function for failure
+     */
+    checkScripts: function (successCallback, errorCallback) {
+      let scriptForMail = mlaConst.names.scriptForMail;
+      let scriptForSlack = mlaConst.names.scriptForSlack;
+      checkScript(scriptForMail, script, function() {
+        checkScript(scriptForSlack, scriptSlack, successCallback, errorCallback);
+      }, errorCallback);
+    },
+    /**
      * Alertを作成して保存する
      * @param metadata 作成するアラートのmetadata
      * @param successCallback 成功時の処理
@@ -222,13 +261,25 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       let queryString = EsDevToolService.createQuery(PATHS.editWatch.method, PATHS.editWatch.path + metadata.alertId);
       let uri = CPATH + '?' + queryString;
       let body = JSON.parse(JSON.stringify(mlaConst.alertTemplate));
-      // templateの{{#toJson}}が使えなかったので直接入れる
-      body.actions.send_email.email.to = metadata.mailAddressTo.map(item => item.value);
-      if (metadata.mailAddressCc.length > 0) {
-        body.actions.send_email.email.cc = metadata.mailAddressCc.map(item => item.value);
+      if (metadata.sendMail) {
+        // templateの{{#toJson}}が使えなかったので直接入れる
+        body.actions.send_email.email.to = metadata.mailAddressTo.map(item => item.value);
+        if (metadata.mailAddressCc.length > 0) {
+          body.actions.send_email.email.cc = metadata.mailAddressCc.map(item => item.value);
+        }
+        if (metadata.mailAddressBcc.length > 0) {
+          body.actions.send_email.email.bcc = metadata.mailAddressBcc.map(item => item.value);
+        }
+      } else {
+        delete body.actions.send_email;
       }
-      if (metadata.mailAddressBcc.length > 0) {
-        body.actions.send_email.email.bcc = metadata.mailAddressBcc.map(item => item.value);
+      if (metadata.notifySlack) {
+        body.actions.notify_slack.slack.message.to = metadata.slackTo.map(item => item.value);
+        if (metadata.slackAccount != '') {
+          body.actions.notify_slack.slack.account = metadata.slackAccount;
+        }
+      } else {
+        delete body.actions.notify_slack;
       }
       body.metadata.job_id = metadata.mlJobId;
       body.metadata.description = metadata.description;
@@ -263,7 +314,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
 
     calculateMlProcessTime: function (job, datafeed) {
       let bucketSpan = job.analysis_config.bucket_span;
-      let frequency = datafeed.frequency;
+      let frequency = datafeed.frequency ? datafeed.frequency : bucketSpan;
       let queryDelay = datafeed.query_delay;
       let totalDelaySeconds = Math.ceil((parse(bucketSpan) + parse(frequency) + parse(queryDelay) + parse('30s')) / 1000);
       return `${totalDelaySeconds}s`;
@@ -271,7 +322,7 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
 
     calculateKibanaDisplayTerm: function (job) {
       let bucketSpan = job.analysis_config.bucket_span;
-      let kibanaDisplayTerm = 15 * parse(bucketSpan) / 1000;
+      let kibanaDisplayTerm = 2 * parse(bucketSpan) / 1000;
       return kibanaDisplayTerm;
     }
   };

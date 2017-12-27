@@ -49,7 +49,7 @@
         <div class="form-group">
           <label>To:</label>
           <div class="form-inline" ng-repeat="mail in input.mailAddressTo track by $index">
-            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail && input.mailAddressTo.length > 1" type="text" class="form-control" placeholder="sample@sample.com"
               size="30" ng-disabled="!input.editMail">
             <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteTo($index)" aria-label="Remove mailto input field" tooltip="Remove input field"
               tooltip-append-to-body="true" ng-if="$index > 0" ng-disabled="!input.editMail">
@@ -88,6 +88,24 @@
           </div>
           <button type="button" class="kuiButton kuiButton--primary" ng-click="addBcc()" aria-label="Add mail bcc input field" tooltip="Add input field"
             tooltip-append-to-body="true" ng-disabled="!input.editMail">
+            <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
+          </button>
+        </div>
+        <div>
+          <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditSlack()" ng-checked="input.editSlack">
+            Slack通知先を更新する
+        </div>
+        <div class="form-group">
+          <div class="form-inline" ng-repeat="slackTo in input.slackTo track by $index">
+            <input name="slackTo" ng-model="slackTo.value" ng-required="input.editSlack && input.slackTo.length > 1" type="text" class="form-control" placeholder="#channel"
+              size="30" ng-disabled="!input.editSlack">
+            <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteSlackTo($index)" aria-label="Remove slack target field" tooltip="Remove slack target field"
+              tooltip-append-to-body="true" ng-if="$index > 0" ng-disabled="!input.editSlack">
+              <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-times"></span>
+            </button>
+          </div>
+          <button type="button" class="kuiButton kuiButton--primary" ng-click="addSlackTo()" aria-label="Add slack target field" tooltip="Add slack target field"
+            tooltip-append-to-body="true" ng-disabled="!input.editSlack">
             <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
           </button>
         </div>
@@ -136,7 +154,7 @@
         </div>
         <div class="modalEdit">
           <div class="modalButton">
-            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editDashboard">
+            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editSlack && !input.editDashboard">
             {{updateButtonText}}
           </button>
           </div>

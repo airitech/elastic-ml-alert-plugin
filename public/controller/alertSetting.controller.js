@@ -1,4 +1,6 @@
-export default function AlertSettingController($scope, $routeParams, $location, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+export default function AlertSettingController($scope, $routeParams, $location, docTitle, Notifier, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+  docTitle.change('ML Alert');
+  const notify = new Notifier({ location: 'ML Alert' });
   var vm = this;
   vm.compareOptions = [
     {compareType:'gte', operator:'≧'},
@@ -12,11 +14,17 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     alertId: '',
     description: '',
     subject: 'Elasticsearch ML 異常検知通知',
+    sendMail: true,
     mailAddressTo: [
       {value: ''}
     ],
     mailAddressCc: [],
     mailAddressBcc: [],
+    notifySlack: false,
+    slackAccount: '',
+    slackTo: [
+      {value: ''}
+    ],
     linkDashboards: [],
     linkSavedSearches: [],
     threshold: 0,
@@ -89,9 +97,15 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     vm.internal.ShowDetailSetting = false;
   };
   vm.save = function () {
-    AlertService.save(vm.input, function() {
-      $location.path('/alert_list');
-    }, function(error) {
+    AlertService.checkScripts(function(){
+      AlertService.save(vm.input, function() {
+        $location.path('/alert_list');
+      }, function(error) {
+        notify.error(error);
+        console.error(error);
+      });
+    }, function(error){
+      notify.error(error);
       console.error(error);
     });
   };
@@ -130,6 +144,12 @@ export default function AlertSettingController($scope, $routeParams, $location, 
   };
   vm.deleteBcc = function(index) {
     vm.input.mailAddressBcc.splice(index, 1);
+  };
+  vm.addSlackTo = function() {
+    vm.input.slackTo.push({value: ''});
+  };
+  vm.deleteSlackTo = function(index) {
+    vm.input.slackTo.splice(index, 1);
   };
   vm.removeDashboard = function(index) {
     vm.dashboards.splice(index, 1);
@@ -226,6 +246,13 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     }
   }
 
+  function getDefault(value, defaultValue) {
+    if (typeof value === "undefined") {
+      return defaultValue;
+    }
+    return value;
+  }
+
   function setInput(data) {
     vm.autoSettingEnabled = false;
     if (!$routeParams.clone) {
@@ -234,18 +261,22 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     }
     vm.input.mlJobId = data.watch.metadata.job_id;
     vm.input.description = data.watch.metadata.description;
-    vm.input.threshold = data.watch.metadata.threshold;
-    vm.input.detectInterval = data.watch.metadata.detect_interval;
-    vm.input.kibanaDisplayTerm = data.watch.metadata.kibana_display_term;
-    vm.input.locale = data.watch.metadata.locale;
-    vm.input.mlProcessTime = data.watch.metadata.ml_process_time;
-    vm.input.linkDashboards = data.watch.metadata.link_dashboards;
-    vm.input.linkSavedSearches = data.watch.metadata.link_saved_searches;
-    vm.input.kibanaUrl = data.watch.metadata.kibana_url;
-    vm.input.subject = data.watch.metadata.subject;
-    vm.input.filterByActualValue = data.watch.metadata.filterByActualValue;
-    vm.input.actualValueThreshold = data.watch.metadata.actualValueThreshold;
-    vm.input.compareOption = data.watch.metadata.compareOption;
+    vm.input.threshold = getDefault(data.watch.metadata.threshold, vm.input.threshold);
+    vm.input.detectInterval = getDefault(data.watch.metadata.detect_interval, vm.input.detectInterval);
+    vm.input.kibanaDisplayTerm = getDefault(data.watch.metadata.kibana_display_term, vm.input.kibanaDisplayTerm);
+    vm.input.locale = getDefault(data.watch.metadata.locale, vm.input.locale);
+    vm.input.mlProcessTime = getDefault(data.watch.metadata.ml_process_time, vm.input.mlProcessTime);
+    vm.input.linkDashboards = getDefault(data.watch.metadata.link_dashboards, vm.input.linkDashboards);
+    vm.input.linkSavedSearches = getDefault(data.watch.metadata.link_saved_searches, vm.input.linkSavedSearches);
+    vm.input.kibanaUrl = getDefault(data.watch.metadata.kibana_url, vm.input.kibanaUrl);
+    vm.input.subject = getDefault(data.watch.metadata.subject, vm.input.subject);
+    vm.input.filterByActualValue = getDefault(data.watch.metadata.filterByActualValue, vm.input.filterByActualValue);
+    vm.input.actualValueThreshold = getDefault(data.watch.metadata.actualValueThreshold, vm.input.actualValueThreshold);
+    let compareOptionIndex = 0;
+    if (vm.compareOptions) {
+      compareOptionIndex = Math.max(0, vm.compareOptions.map(option => option.compareType).indexOf(data.watch.metadata.compareOption.compareType));
+    }
+    vm.input.compareOption = vm.compareOptions[compareOptionIndex];
     if (data.watch.trigger.schedule.hasOwnProperty('cron')) {
       vm.input.scheduleKind = 'cron';
       vm.input.triggerSchedule = data.watch.trigger.schedule.cron;
@@ -253,12 +284,24 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       vm.input.scheduleKind = 'interval';
       vm.input.triggerSchedule = data.watch.trigger.schedule.interval;
     }
-    vm.input.mailAddressTo = data.watch.actions.send_email.email.to.map(address => ({value:address}));
-    if (data.watch.actions.send_email.email.cc) {
-      vm.input.mailAddressCc = data.watch.actions.send_email.email.cc.map(address => ({value:address}));
+    if (data.watch.actions.send_email) {
+      vm.input.sendMail = true;
+      vm.input.mailAddressTo = data.watch.actions.send_email.email.to.map(address => ({value:address}));
+      if (data.watch.actions.send_email.email.cc) {
+        vm.input.mailAddressCc = data.watch.actions.send_email.email.cc.map(address => ({value:address}));
+      }
+      if (data.watch.actions.send_email.email.bcc) {
+        vm.input.mailAddressBcc = data.watch.actions.send_email.email.bcc.map(address => ({value:address}));
+      }
+    } else {
+      vm.input.sendMail = false;
     }
-    if (data.watch.actions.send_email.email.bcc) {
-      vm.input.mailAddressBcc = data.watch.actions.send_email.email.bcc.map(address => ({value:address}));
+    if (data.watch.actions.notify_slack && data.watch.actions.notify_slack.slack.message.to) {
+      vm.input.notifySlack = true;
+      vm.input.slackAccount = getDefault(data.watch.actions.notify_slack.slack.account, vm.input.slackAccount);
+      vm.input.slackTo = data.watch.actions.notify_slack.slack.message.to.map(slackTarget => ({value:slackTarget}));
+    } else {
+      vm.input.notifySlack = false;
     }
     savedDashboards.find("").then(function(savedData) {
       vm.dashboards = savedData.hits.filter(
@@ -270,7 +313,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
       }));
       vm.changeJobId();
     });
-    savedSavedSearches.find("").then(function(savedData) {
+    savedSearches.find("").then(function(savedData) {
       vm.savedSearches = savedData.hits.filter(
         hit => ~data.watch.metadata.link_saved_searches.map(savedSearch => savedSearch.id).indexOf(hit.id)
       );
