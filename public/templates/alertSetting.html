@@ -73,8 +73,8 @@
           <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="Elasticsearch ML 異常検知通知">
         </div>
         <div class="form-group">
-          <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack">
-          <label for="filterByActualValue">メール通知</label>
+          <input id="sendMail" name="sendMail" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack">
+          <label for="sendMail">メール通知</label>
         </div>
         <div class="sub-form">
           <div class="form-group">
@@ -125,8 +125,8 @@
           </div>
         </div>
         <div class="form-group">
-          <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail">
-          <label for="filterByActualValue">Slack通知</label>
+          <input id="notifySlack" name="notifySlack" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail">
+          <label for="notifySlack">Slack通知</label>
         </div>
         <div class="sub-form">
           <div class="form-group">
@@ -327,7 +327,7 @@
             <div class="inline-group">
               <span>(実際の値)</span>
               <select class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" ng-model="asCtrl.input.compareOption" ng-options="option.operator for option in asCtrl.compareOptions"></select>
-              <input class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" name="actualValueThreshold" ng-model="asCtrl.input.actualValueThreshold" required="" type="number">
+              <input class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" name="actualValueThreshold" ng-model="asCtrl.input.actualValueThreshold" required="" type="number" step="any">
             </div>
             <div class="hintbox">
               <p>
