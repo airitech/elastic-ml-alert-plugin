@@ -109,6 +109,13 @@
             <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
           </button>
         </div>
+        <div>
+          <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditLine()" ng-checked="input.editLine">
+            LINE Notify設定を更新する
+        </div>
+        <div class="form-group">
+          <input name="lineNotifyAccessToken" ng-model="input.lineNotifyAccessToken" type="text" class="form-control" placeholder="" ng-disabled="!input.editLine">
+       </div>
         <div class="form-group">
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditDashboard()" ng-checked="input.editDashboard">
             通知に含めるリンク先のDashboardを更新する
@@ -154,7 +161,7 @@
         </div>
         <div class="modalEdit">
           <div class="modalButton">
-            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editSlack && !input.editDashboard">
+            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editSlack && !input.editDashboard && !input.editLine">
             {{updateButtonText}}
           </button>
           </div>

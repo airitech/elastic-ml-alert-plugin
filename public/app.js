@@ -32,7 +32,7 @@ import MlJobService from './service/mlJob.service';
 import AlertService from './service/alert.service';
 
 import constValue from './const';
-import { script, scriptSlack } from './script/script';
+import { script, scriptSlack, scriptLine } from './script/script';
 
 uiRoutes.enable();
 uiRoutes
@@ -60,6 +60,7 @@ uiModules
   .constant('mlaConst', constValue)
   .constant('script', script)
   .constant('scriptSlack', scriptSlack)
+  .constant('scriptLine', scriptLine)
   .constant('parse', parse)
   .controller('AlertListController', AlertListController)
   .controller('AlertSettingController', AlertSettingController)

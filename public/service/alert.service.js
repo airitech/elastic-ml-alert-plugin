@@ -1,4 +1,4 @@
-export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script, scriptSlack) {
+export default function AlertService($http, mlaConst, parse, EsDevToolService, es, script, scriptSlack, scriptLine) {
   const PATHS = mlaConst.paths;
   var CPATH = '..' + PATHS.console.path;
   var CMETHOD = PATHS.console.method;
@@ -192,11 +192,19 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
           body.actions.notify_slack = mlaConst.slackAction;
           body.actions.notify_slack.slack.message.to = input.slackTo.map(item => item.value);
         }
-        if (input.editMail && input.mailAddressTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+        if (input.editLine && input.lineNotifyAccessToken != "") {
+          body.actions.notify_line = mlaConst.lineAction;
+          body.metadata.line_notify_access_token = input.lineNotifyAccessToken;
+        }
+        if (input.editMail && input.mailAddressTo[0].value == "" && body.actions.send_email && (body.actions.notify_slack || body.actions.notify_line)) {
           delete body.actions.send_email;
         }
-        if (input.editSlack && input.slackTo[0].value == "" && body.actions.send_email && body.actions.notify_slack) {
+        if (input.editSlack && input.slackTo[0].value == "" && (body.actions.send_email || body.actions.notify_line) && body.actions.notify_slack) {
           delete body.actions.notify_slack;
+        }
+        if (input.editLine && input.lineNotifyAccessToken == "" && (body.actions.send_email || body.actions.notify_slack) && body.actions.notify_line) {
+          delete body.actions.notify_line;
+          body.metadata.line_notify_access_token = "";
         }
         if (input.editDashboard) {
           body.metadata.link_dashboards = input.linkDashboards;
@@ -247,8 +255,11 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
     checkScripts: function (successCallback, errorCallback) {
       let scriptForMail = mlaConst.names.scriptForMail;
       let scriptForSlack = mlaConst.names.scriptForSlack;
+      let scriptForLine = mlaConst.names.scriptForLine;
       checkScript(scriptForMail, script, function() {
-        checkScript(scriptForSlack, scriptSlack, successCallback, errorCallback);
+        checkScript(scriptForSlack, scriptSlack, function() {
+          checkScript(scriptForLine, scriptLine, successCallback, errorCallback);
+        }, errorCallback);
       }, errorCallback);
     },
     /**
@@ -280,6 +291,11 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
         }
       } else {
         delete body.actions.notify_slack;
+      }
+      if (metadata.notifyLine) {
+        body.metadata.line_notify_access_token = metadata.lineNotifyAccessToken;
+      } else {
+        delete body.actions.notify_line;
       }
       body.metadata.job_id = metadata.mlJobId;
       body.metadata.description = metadata.description;

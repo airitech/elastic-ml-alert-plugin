@@ -86,6 +86,8 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
         {value: ''}
       ],
       editSlack: false,
+      editLine: false,
+      lineNotifyAccessToken: "",
       editDashboard: false
     };
     confirmScope.dashboards = [];
@@ -143,6 +145,9 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
     };
     confirmScope.toggleEditSlack = function(index) {
       confirmScope.input.editSlack = !confirmScope.input.editSlack;
+    };
+    confirmScope.toggleEditLine = function(index) {
+      confirmScope.input.editLine = !confirmScope.input.editLine;
     };
     confirmScope.toggleEditDashboard = function(index) {
       confirmScope.input.editDashboard = !confirmScope.input.editDashboard;

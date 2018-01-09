@@ -73,7 +73,7 @@
           <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="Elasticsearch ML 異常検知通知">
         </div>
         <div class="form-group">
-          <input id="sendMail" name="sendMail" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack">
+          <input id="sendMail" name="sendMail" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack && !asCtrl.input.notifyLine">
           <label for="sendMail">メール通知</label>
         </div>
         <div class="sub-form">
@@ -125,7 +125,7 @@
           </div>
         </div>
         <div class="form-group">
-          <input id="notifySlack" name="notifySlack" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail">
+          <input id="notifySlack" name="notifySlack" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail && !asCtrl.input.notifyLine">
           <label for="notifySlack">Slack通知</label>
         </div>
         <div class="sub-form">
@@ -147,6 +147,16 @@
           <div class="form-group">
             <label>elasticsearch.ymlに設定したSlackのaccountを入力してください。（空の場合、デフォルトアカウントを使用します）</label>
             <input name="slackAccount" ng-model="asCtrl.input.slackAccount" type="text" class="form-control" placeholder="" ng-disabled="!asCtrl.input.notifySlack">
+          </div>
+        </div>
+        <div class="form-group">
+          <input id="notifyLine" name="notifyLine" ng-model="asCtrl.input.notifyLine" type="checkbox" ng-required="!asCtrl.input.sendMail && !asCtrl.input.notifySlack">
+          <label for="notifyLine">LINE Notify</label>
+        </div>
+        <div class="sub-form">
+          <div class="form-group">
+            <label>LINE Notifyのアクセストークンを入力してください。</label>
+            <input name="lineNotifyAccessToken" ng-model="asCtrl.input.lineNotifyAccessToken" ng-required="asCtrl.input.notifyLine" type="text" class="form-control" placeholder="" ng-disabled="!asCtrl.input.notifyLine">
           </div>
         </div>
         <div class="form-group">

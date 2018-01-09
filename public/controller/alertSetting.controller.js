@@ -25,6 +25,8 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     slackTo: [
       {value: ''}
     ],
+    notifyLine: false,
+    lineNotifyAccessToken: '',
     linkDashboards: [],
     linkSavedSearches: [],
     threshold: 0,
@@ -272,6 +274,10 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     vm.input.subject = getDefault(data.watch.metadata.subject, vm.input.subject);
     vm.input.filterByActualValue = getDefault(data.watch.metadata.filterByActualValue, vm.input.filterByActualValue);
     vm.input.actualValueThreshold = getDefault(data.watch.metadata.actualValueThreshold, vm.input.actualValueThreshold);
+    vm.input.lineNotifyAccessToken = getDefault(data.watch.metadata.line_notify_access_token, vm.input.lineNotifyAccessToken);
+    if (data.watch.actions.notify_line) {
+      vm.input.notifyLine = true;
+    }
     let compareOptionIndex = 0;
     if (vm.compareOptions) {
       compareOptionIndex = Math.max(0, vm.compareOptions.map(option => option.compareType).indexOf(data.watch.metadata.compareOption.compareType));

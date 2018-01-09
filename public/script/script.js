@@ -310,3 +310,69 @@ for (def hit : ctx.payload.hits.hits) {
 ';
 }
 return [ 'message' : message , 'severity' : severity , 'severityColor' : severityColor ];`;
+export const scriptLine=`/**
+ * maxやminなど追加でフィルタすると助かる場合には、追加のフィルタを入れる。
+ */
+String mainTemplate = '%s
+%s
+Alert ID: %s
+Description: %s
+Alert Triggered Time: %s
+ML JobID: %s
+
+Detail:';
+
+String detailTemplate = '  timestamp: %s
+  function: %s
+  description: %s
+  field name: %s
+  anomaly score: %.3f
+  actual: %.3f
+  typical: %.3f
+  probability: %.6f
+';
+
+String partitionTemplate = '  partitions:
+    partition name: %s
+    partition value: %s
+';
+
+def dateForJpn = LocalDateTime.ofInstant(Instant.ofEpochMilli(ctx.execution_time.millis), ZoneId.of(ctx.metadata.locale));
+def dateForJpnStr = dateForJpn.format(DateTimeFormatter.ofPattern(ctx.metadata.date_format));
+def firstHit = ctx.payload.hits.hits[0];
+def severity = 'Warning';
+def severityColor = '#8BC8FB';
+double maxScore = 0;
+for (def hit : ctx.payload.hits.hits) {
+  if (maxScore < hit._source.record_score) {
+    maxScore = hit._source.record_score;
+  }
+}
+if (maxScore >= 75) {
+  severity = 'Critical';
+  severityColor = '#FE5050';
+} else if (maxScore >= 50) {
+  severity = 'Major';
+  severityColor = '#FBA740';
+} else if (maxScore >= 25) {
+  severity = 'Minor';
+  severityColor = '#FDEC25';
+}
+def values = new def[] {ctx.metadata.subject, severity, ctx.watch_id, ctx.metadata.description, dateForJpnStr, ctx.metadata.job_id};
+def message = String.format(mainTemplate, values);
+
+for (def hit : ctx.payload.hits.hits) {
+  message += '
+';
+  def anomalyDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(hit._source.timestamp), ZoneId.of(ctx.metadata.locale));
+  def anomalyDateStr = anomalyDate.format(DateTimeFormatter.ofPattern(ctx.metadata.date_format));
+  def partitionName = hit._source.partition_field_name;
+  String partitionValue = hit._source.partition_field_value;
+  def detailValues = new def[] {anomalyDateStr, hit._source.function, hit._source.function_description, hit._source.field_name, hit._source.record_score, hit._source.actual[0], hit._source.typical[0], hit._source.probability};
+  message += String.format(detailTemplate, detailValues);
+  if (partitionName != null) {
+    def partitionValues = new def[] {partitionName, partitionValue};
+    message += String.format(partitionTemplate, partitionValues);
+  }
+}
+return [ 'message' : message , 'severity' : severity ];`;
