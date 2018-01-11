@@ -3,7 +3,7 @@
   <div class="kuiViewContentItem kuiBar kuiVerticalRhythm">
     <div>
       <h1 class="kuiTitle">
-        設定通知一覧
+        {{'MLA-ALERT_LIST'|translate}}
       </h1>
     </div>
   </div>
@@ -18,12 +18,12 @@
       <div class="kuiToolBarSection">
         <button class="kuiButton kuiButton--primary" ng-click="moveCreate()" aria-label="Create New Alert">
           <span class="kuiButton__inner">
-            <span>追加</span>
+            <span>{{'MLA-ADD_NEW'|translate}}</span>
            </span>
         </button>
         <button class="kuiButton kuiButton--basic kuiButton--iconText" ng-click="bulkEdit()" aria-label="Create New Alert" ng-disabled="selectedItems.length == 0">
           <span class="kuiButton__inner">
-            <span>一括操作</span>
+            <span>{{'MLA-BULK_OPERATION'|translate}}</span>
           </span>
         </button>
       </div>
@@ -52,19 +52,19 @@
             </div>
           </th>
           <th class="kuiTableHeaderCell alertId">
-            <span class="kuiTableHeaderCell__liner">アラートID</span>
+            <span class="kuiTableHeaderCell__liner">Alert ID</span>
           </th>
           <th class="kuiTableHeaderCell description">
-            <span class="kuiTableHeaderCell__liner">概要</span>
+            <span class="kuiTableHeaderCell__liner">{{'MLA-DESCRIPTION'|translate}}</span>
           </th>
           <th class="kuiTableHeaderCell state">
-              <span class="kuiTableHeaderCell__liner">状態</span>
+              <span class="kuiTableHeaderCell__liner">{{'MLA-STATE'|translate}}</span>
           </th>
           <th class="kuiTableHeaderCell">
-              <span class="kuiTableHeaderCell__liner">通知先</span>
+              <span class="kuiTableHeaderCell__liner">{{'MLA-TARGET'|translate}}</span>
           </th>
           <th class="kuiTableHeaderCell">
-              <span class="kuiTableHeaderCell__liner">リンクDashboard</span>
+              <span class="kuiTableHeaderCell__liner">Dashboard</span>
           </th>
           <th class="kuiTableHeaderCell actions">
               <span class="kuiTableHeaderCell__liner">Actions</span>
@@ -75,7 +75,7 @@
         <tr class="kuiTableRow" ng-repeat-start="(jobId, alerts) in mlJobAlerts track by jobId">
           <td class="kuiTableRowCell category" colspan="7">
             <div class="kuiTableRowCell__liner">
-              MLジョブID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!('{{jobId}}')),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
+              ML Job ID : <a ng-href="./ml#/explorer?_g=(ml:(jobIds:!('{{jobId}}')),time:(from:now-7d,mode:quick,to:now))">{{jobId}}</a>
             </div>
           </td>
         </tr>
@@ -139,13 +139,13 @@
               <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Disable alert" ng-if="alert._source.status.state.active" ng-click="deactivateAlert($event)" value="{{alert._id}}">
                   <i aria-hidden="true" class="fa fa-stop"></i>
                 </button>  
-              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="通知変更" ng-click="moveEdit($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Edit alert" ng-click="moveEdit($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-pencil-square-o"></i>
               </button>
-              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="コピー" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--basic kuiButton--small" tooltip="Copy" ng-click="moveEdit($event, 'clone')" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-clone"></i>
               </button>
-              <button class="kuiButton kuiButton--danger kuiButton--small" tooltip="削除" ng-click="delete($event)" value="{{alert._id}}">
+              <button class="kuiButton kuiButton--danger kuiButton--small" tooltip="Delete" ng-click="delete($event)" value="{{alert._id}}">
                 <i aria-hidden="true" class="fa fa-trash"></i>
               </button>
             </div>

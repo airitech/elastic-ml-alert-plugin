@@ -8,8 +8,8 @@ var constValue = {
     scriptForLine: 'create_partition_notify_for_line'
   },
   displayNames: {
-    'alert_list': '設定通知一覧',
-    'alert_setting': '通知設定'
+    'alert_list': 'Alert List',
+    'alert_setting': 'Alert Settings'
   },
   paths: {
     console: {

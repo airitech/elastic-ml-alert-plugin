@@ -24,7 +24,7 @@ export const ConfirmationButtonTypes = {
  * but showClose is true, the function defaults to onCancel.
  */
 
-module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSelectModal) {
+module.factory('alertBulkEditModal', function ($rootScope, $compile, $translate, dashboardSelectModal) {
   let modalPopover;
   const confirmQueue = [];
 
@@ -41,11 +41,11 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
       deleteButtonText: 'Delete',
       activateButtonText: 'Activate',
       deactivateButtonText: 'Deactivate',
-      updateButtonText: '一括更新',
+      updateButtonText: 'Bulk Update',
       deleteMessage: 'Delete selected alerts',
       activateMessage: 'Activate selected alerts',
       deactivateMessage: 'Deactivate selected alerts',
-      updateMessage: 'アラートの設定を一括更新'
+      updateMessage: 'Bulk update alert settings'
     };
 
     if (customOptions.showClose === true && !customOptions.title) {
@@ -169,14 +169,16 @@ module.factory('alertBulkEditModal', function ($rootScope, $compile, dashboardSe
           }));
         }
       }
-      const confirmModalOptions = {
-        select: select,
-        title: "ダッシュボード選択",
-        showClose: true
-      };
-      dashboardSelectModal(
-        confirmModalOptions
-      );
+      $translate('MLA-SELECT_DASHBOARDS', ).then(function(translation) {
+        const confirmModalOptions = {
+          select: select,
+          title: translation,
+          showClose: true
+        };
+        dashboardSelectModal(
+          confirmModalOptions
+        );
+      });
     };
 
     function showModal(confirmScope) {

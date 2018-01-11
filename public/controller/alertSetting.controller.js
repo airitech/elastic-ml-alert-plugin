@@ -1,4 +1,4 @@
-export default function AlertSettingController($scope, $routeParams, $location, docTitle, Notifier, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
+export default function AlertSettingController($scope, $routeParams, $location, $translate, docTitle, Notifier, mlaConst, MlJobService, AlertService, dashboardSelectModal, savedSearchSelectModal, savedDashboards, savedSearches) {
   docTitle.change('ML Alert');
   const notify = new Notifier({ location: 'ML Alert' });
   var vm = this;
@@ -8,12 +8,12 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     {compareType:'lte', operator:'≦'},
     {compareType:'lt', operator:'＜'}
   ];
-  // 入力初期値
+  // default values
   vm.input = {
     mlJobId: '',
     alertId: '',
     description: '',
-    subject: 'Elasticsearch ML 異常検知通知',
+    subject: 'Elasticsearch ML Anomaly Detection',
     sendMail: true,
     mailAddressTo: [
       {value: ''}
@@ -41,7 +41,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
     compareOption: vm.compareOptions[0],
     kibanaUrl: "http://localhost:5601/"
   };
-  // その他の初期値
+  // other default values
   vm.internal = {
     showSetting: false,
     ShowDetailSetting: false
@@ -177,14 +177,16 @@ export default function AlertSettingController($scope, $routeParams, $location, 
         }));
       }
     }
-    const confirmModalOptions = {
-      select: select,
-      title: "ダッシュボード選択",
-      showClose: true
-    };
-    dashboardSelectModal(
-      confirmModalOptions
-    );
+    $translate('MLA-SELECT_DASHBOARDS', ).then(function(translation) {
+      const confirmModalOptions = {
+        select: select,
+        title: translation,
+        showClose: true
+      };
+      dashboardSelectModal(
+        confirmModalOptions
+      );
+    });
   };
   vm.selectSavedSearch = function () {
     function select(savedSearch) {
@@ -196,14 +198,16 @@ export default function AlertSettingController($scope, $routeParams, $location, 
         }));
       }
     }
-    const confirmModalOptions = {
-      select: select,
-      title: "Saved Search 選択",
-      showClose: true
-    };
-    savedSearchSelectModal(
-      confirmModalOptions
-    );
+    $translate('MLA-SELECT_SAVED_SEARCH', ).then(function(translation) {
+      const confirmModalOptions = {
+        select: select,
+        title: translation,
+        showClose: true
+      };
+      savedSearchSelectModal(
+        confirmModalOptions
+      );
+    });
   };
   vm.init = function () {
     setKibanaUrl();
@@ -213,7 +217,9 @@ export default function AlertSettingController($scope, $routeParams, $location, 
         setInput(res["data"]);
       }, function(res) {
         vm.existsAlert = false;
-        notify.error(`${alertId}は存在しません`);
+        $translate('MLA-ALERT_NOT_EXIST', {"alertId": alertId}).then(function(translation) {
+          notify.error(translation);
+        });
       });
     }
     MlJobService.searchList(function (res) {
@@ -240,8 +246,7 @@ export default function AlertSettingController($scope, $routeParams, $location, 
 
   function finishSearch() {
     isFetch = false;
-    // Do nothing.
-    // 検索時に、jobidが変更されている場合は、再度検索する。
+    // Search again if job_id is changed
     if (isChange) {
       isChange = false;
       vm.changeJobId();
@@ -332,23 +337,22 @@ export default function AlertSettingController($scope, $routeParams, $location, 
   }
 
   /**
-   * job情報をもとに、Alertingの自動設定を行う。
-   * @param job MLのJob情報
-   * @return Alertの自動設定値
+   * Set initial values automatically according to the ML job information
+   * @param job ML Job information
+   * @return initial values
    */
   function autoSetting(job) {
-    // 保存されているアラートの編集時は、
-    // 保存されている設定をそのまま表示する。
-    // ただし、その後jobを選択し直したら、変わるようにする。
+    // Values are not overwritten when existing alert is edited.
+    // But they should be changed if the target job is changed.
     if (!vm.autoSettingEnabled) {
       vm.autoSettingEnabled = true;
       return;
     }
 
-    // kibanaDisplayTermの初期値は、bucket_spanの15倍にする
+    // kibanaDisplayTerm should be long if bucket_span is long.
     vm.input.kibanaDisplayTerm = AlertService.calculateKibanaDisplayTerm(job);
 
-    // DataFeedの設定を取得して、mlProcessTimeを設定
+    // mlProcessTime is set according to the datafeed settings 
     MlJobService.getDataFeed(job.job_id, function (res) {
       let datafeeds = res.data.datafeeds;
       if (datafeeds && datafeeds.length != 0) {

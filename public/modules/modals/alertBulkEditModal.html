@@ -44,7 +44,7 @@
         </div>
         <div>
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditMail()" ng-checked="input.editMail">
-            メールアドレスを更新する
+          {{'MLA-UPDATE_MAIL_ADDRESS'|translate}}
         </div>
         <div class="form-group">
           <label>To:</label>
@@ -93,7 +93,7 @@
         </div>
         <div>
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditSlack()" ng-checked="input.editSlack">
-            Slack通知先を更新する
+          {{'MLA-UPDATE_SLACK'|translate}}
         </div>
         <div class="form-group">
           <div class="form-inline" ng-repeat="slackTo in input.slackTo track by $index">
@@ -111,14 +111,14 @@
         </div>
         <div>
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditLine()" ng-checked="input.editLine">
-            LINE Notify設定を更新する
+          {{'MLA-UPDATE_LINE_NOTIFY'|translate}}
         </div>
         <div class="form-group">
           <input name="lineNotifyAccessToken" ng-model="input.lineNotifyAccessToken" type="text" class="form-control" placeholder="" ng-disabled="!input.editLine">
        </div>
         <div class="form-group">
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditDashboard()" ng-checked="input.editDashboard">
-            通知に含めるリンク先のDashboardを更新する
+          {{'MLA-UPDATE_DASHBOARDS'|translate}}
           <table class="kuiTable" ng-if="dashboards.length">
             <thead>
               <tr>
@@ -155,7 +155,7 @@
           </table>
           <div>
             <button type="button" class="btn btn-success" ng-click="selectDashboard()" ng-disabled="!input.editDashboard">
-              <span>Dashboard一覧から選択</span>
+              <span>{{'MLA-SELECT_DASHBOARD'|translate}}</span>
             </button>
           </div>
         </div>
