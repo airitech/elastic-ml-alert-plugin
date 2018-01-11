@@ -20,9 +20,9 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
   }
   return {
     /**
-     * MLA用のAlert情報一覧を取得する。
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Get the list of alerts for elastic-ml-alart plugin
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     searchList: function (successCallback, errorCallback) {
       var result = es.search({
@@ -44,10 +44,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       }).then(successCallback, errorCallback);
     },
     /**
-     * AlertIDを指定してAlert情報を取得する。
-     * @param alertId AlertのID
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Get alert information by alertId
+     * @param alertId Alert ID
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     search: function (alertId, successCallback, errorCallback) {
       let queryString = EsDevToolService.createQuery(PATHS.getWatch.method, PATHS.getWatch.path + alertId);
@@ -55,10 +55,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       $http.post(uri).then(successCallback, errorCallback);
     },
     /**
-     * AlertIDのリストを指定してAlert情報を削除する。
-     * @param alertIds AlertIDのリスト
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Delete alerts
+     * @param alertIds list of AlertIDs
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     delete: function (alertIds, successCallback, errorCallback) {
       var totalCount = alertIds.length;
@@ -93,10 +93,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
-     * AlertIDのリストを指定してAlertをActivateする。
-     * @param alertIds AlertIDのリスト
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Activate alerts
+     * @param alertIds list of AlertIDs
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     activate: function (alertIds, successCallback, errorCallback) {
       var totalCount = alertIds.length;
@@ -131,10 +131,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
-     * AlertIDのリストを指定してAlertをDeactivateする。
-     * @param alertIds AlertIDのリスト
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Deactivate alerts
+     * @param alertIds list of AlertIDs
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     deactivate: function (alertIds, successCallback, errorCallback) {
       var totalCount = alertIds.length;
@@ -169,10 +169,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       });
     },
     /**
-     * AlertIDのリストと変更するパラメータを指定してAlertを更新する。
-     * @param alertIds AlertIDのリスト
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Update alerts
+     * @param alertIds list of AlertIDs
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     bulkUpdate: function (alertIds, input, successCallback, errorCallback) {
       var totalCount = alertIds.length;
@@ -263,10 +263,10 @@ export default function AlertService($http, mlaConst, parse, EsDevToolService, e
       }, errorCallback);
     },
     /**
-     * Alertを作成して保存する
-     * @param metadata 作成するアラートのmetadata
-     * @param successCallback 成功時の処理
-     * @param errorCallback 失敗時の処理
+     * Save an alert
+     * @param metadata metadata of the alert
+     * @param successCallback success callback
+     * @param errorCallback callback for failure
      */
     save: function (metadata, successCallback, errorCallback) {
       let queryString = EsDevToolService.createQuery(PATHS.editWatch.method, PATHS.editWatch.path + metadata.alertId);

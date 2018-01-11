@@ -1,10 +1,10 @@
 export default function EsDevToolService() {
   return {
     /**
-     * DevTools用のクエリストリング生成処理
-     * @param method リクエストのメソッド
-     * @param path ESに送付するパス
-     * @return リクエストに付与すべきクエリストリング
+     * Create query string for DevTools
+     * @param method request method
+     * @param path path of elasticsearch
+     * @return query string
      */
     createQuery: function (method, path) {
       let replacePath = path.replace(new RegExp('/', 'g'), '%2F');
