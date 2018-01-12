@@ -68,7 +68,7 @@
   "MLA-FORM_TARGET_INTERVAL_HINT": "通知タイミングの間隔に合わせてください。",
   "MLA-FORM_KIBANA_DISPLAY_TERM": "Dashboardのリンクを開く際に、異常検知時刻の何秒前から何秒後までの時間範囲で表示するか",
   "MLA-FORM_LOCALE": "通知メールに時刻を記載する際のフォーマットを決めるためのlocale",
-  "MLA-FORM_DELAY": "MLの異常検知結果が確定するまでの遅延時間を入力してください。",
+  "MLA-FORM_DELAY": "MLの異常検知結果が確定するまでの遅延時間",
   "MLA-FORM_DELAY_HINT": "bucket_span + frequency + query_delay + (ML処理時間) とする必要があります。\nこの値を小さくし過ぎると、異常検知結果が通知されません。",
   "MLA-FORM_DELAY_ERROR": "入力の形式が正しくありません。\n正しい入力の例：\"60s\", \"10m\", \"4h\", \"1d\"",
   "MLA-FORM_FILTER_BY_ACTUAL_VALUE": "実際の値でフィルターする場合の条件",
