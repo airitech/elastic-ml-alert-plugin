@@ -4,11 +4,12 @@ var constValue = {
     mlIndexName: '.ml-anomalies-*',
     indexName: '.ml-alert',
     scriptForMail: 'create_partition_notify_for_mail',
-    scriptForSlack: 'create_partition_notify_for_slack'
+    scriptForSlack: 'create_partition_notify_for_slack',
+    scriptForLine: 'create_partition_notify_for_line'
   },
   displayNames: {
-    'alert_list': '設定通知一覧',
-    'alert_setting': '通知設定'
+    'alert_list': 'Alert List',
+    'alert_setting': 'Alert Settings'
   },
   paths: {
     console: {
@@ -83,6 +84,26 @@ var constValue = {
             "color": "{{ctx.payload.severityColor}}"
           }
         ]
+      }
+    }
+  },
+  lineAction: {
+    "transform": {
+      "script": {
+        "id": "create_partition_notify_for_line"
+      },
+    },
+    "webhook": {
+      "method": "POST",
+      "host": "notify-api.line.me",
+      "port": 443,
+      "path": "/api/notify",
+      "scheme": "https",
+      "headers" : {
+        "Authorization": "Bearer {{ctx.metadata.line_notify_access_token}}"
+      },
+      "params" : {
+        "message" : "{{ctx.payload.message}}"
       }
     }
   },
@@ -187,6 +208,26 @@ var constValue = {
             ]
           }
         }
+      },
+      "notify_line": {
+        "transform": {
+          "script": {
+            "id": "create_partition_notify_for_line"
+          },
+        },
+        "webhook": {
+          "method": "POST",
+          "host": "notify-api.line.me",
+          "port": 443,
+          "path": "/api/notify",
+          "scheme": "https",
+          "headers" : {
+            "Authorization": "Bearer {{ctx.metadata.line_notify_access_token}}"
+          },
+          "params" : {
+            "message" : "{{ctx.payload.message}}"
+          }
+        }
       }
     },
     "metadata": {
@@ -201,6 +242,7 @@ var constValue = {
       "alert_type": "mla",
       "ml_process_time": "3m",
       "subject": "Elasticsearch ML 異常検知通知",
+      "line_notify_access_token": "",
       "double_quate": "\"",
       "job_id": "",
       "date_format": "yyyy/MM/dd HH:mm:ss"

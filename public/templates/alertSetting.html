@@ -3,14 +3,14 @@
   <div class="kuiViewContentItem kuiBar kuiVerticalRhythm">
     <div>
       <h1 class="kuiTitle">
-        通知設定
+        {{'MLA-ALERT_SETTINGS'|translate}}
       </h1>
     </div>
   </div>
   <div class="kuiViewContentItem kuiControlledTable kuiVerticalRhythm" ng-init="asCtrl.init()">
     <form name="form" role="form" class="well ng-pristine ng-valid ng-valid-index-name-input ng-valid-required" ng-submit="asCtrl.save();">
       <div class="form-group">
-        <label>Machine Leaning JobのIDを入力してください。</label>
+        <label>Machine Leaning Job ID</label>
         <div class="kuiToolBar">
           <input ng-model="asCtrl.input.mlJobId" ng-change="asCtrl.changeJobId();" name="mlJobId" required="" type="text" class="form-control"
             placeholder="Job ID">
@@ -44,7 +44,7 @@
         </table>
         <div class="kuiPanel kuiPanel--centered kuiPanel--withToolBar" ng-if="loaded && !mlJobsCandidates.length && !asCtrl.input.mlJobId" ng-cloak>
           <div class="kuiTableInfo kuiNoItems">
-            Machine Learning Jobがありません。最初にMachine Learning Jobを作成してください。
+            {{'MLA-ML_JOB_ID_NOT_EXIST'|translate}}
           </div>
         </div>
       </div>
@@ -52,33 +52,33 @@
       <br />
       <div ng-show="asCtrl.internal.showSetting">
         <div class="form-group">
-          <label>通知設定のIDを指定してください。</label>
+          <label>{{'MLA-FORM_ALERT_ID'|translate}}</label>
           <p class="help-block">
-            英数字と"_"及び"-"が利用可能です。
+            {{'MLA-FORM_ALERT_ID_HINT'|translate}}
           </p>
-          <input id="alertId" name="description" ng-model="asCtrl.input.alertId" required="" type="text" class="form-control" placeholder="alert_id"
+          <input id="alertId" name="alertId" ng-model="asCtrl.input.alertId" required="" type="text" class="form-control" placeholder="alert_id"
             ng-change="asCtrl.checkAlertId()">
           <div class="hintbox" ng-if="asCtrl.existsAlert">
             <p class="ng-binding">
-              既に存在するアラートIDのため、保存すると上書きされます
+              {{'MLA-ALERT_ID_EXISTS'|translate}}
             </p>
           </div>
         </div>
         <div class="form-group">
-          <label>通知の概要説明を記載してください。</label>
-          <input name="description" ng-model="asCtrl.input.description" required="" type="text" class="form-control" placeholder="CPU使用率の異常を検知します。">
+          <label>{{'MLA-FORM_DESCRIPTION'|translate}}</label>
+          <input name="description" ng-model="asCtrl.input.description" required="" type="text" class="form-control" placeholder="{{'MLA-FORM_DESCRIPTION_SAMPLE'|translate}}">
         </div>
         <div class="form-group">
-          <label>通知メールのタイトルを記載してください。</label>
-          <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="Elasticsearch ML 異常検知通知">
+          <label>{{'MLA-FORM_SUBJECT'|translate}}</label>
+          <input name="subject" ng-model="asCtrl.input.subject" required="" type="text" class="form-control" placeholder="{{'MLA-FORM_SUBJECT_SAMPLE'|translate}}">
         </div>
         <div class="form-group">
-          <input id="sendMail" name="sendMail" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack">
-          <label for="sendMail">メール通知</label>
+          <input id="sendMail" name="sendMail" ng-model="asCtrl.input.sendMail" type="checkbox" ng-required="!asCtrl.input.notifySlack && !asCtrl.input.notifyLine">
+          <label for="sendMail">{{'MLA-MAIL_NOTIFICATION'|translate}}</label>
         </div>
         <div class="sub-form">
           <div class="form-group">
-            <label>メールアドレスを入力してください。</label><br />
+            <label>{{'MLA-FORM_MAIL'|translate}}</label><br />
             <label>To:</label>
             <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressTo track by $index">
               <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
@@ -96,7 +96,7 @@
           <div class="form-group">
             <label>Cc:</label>
             <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressCc track by $index">
-              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+              <input name="mailAddressCc" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
                 size="30" ng-disabled="!asCtrl.input.sendMail">
               <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
                 tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
@@ -111,7 +111,7 @@
           <div class="form-group">
             <label>Bcc:</label>
             <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressBcc track by $index">
-              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+              <input name="mailAddressBcc" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
                 size="30" ng-disabled="!asCtrl.input.sendMail">
               <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
                 tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
@@ -125,12 +125,12 @@
           </div>
         </div>
         <div class="form-group">
-          <input id="notifySlack" name="notifySlack" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail">
-          <label for="notifySlack">Slack通知</label>
+          <input id="notifySlack" name="notifySlack" ng-model="asCtrl.input.notifySlack" type="checkbox" ng-required="!asCtrl.input.sendMail && !asCtrl.input.notifyLine">
+          <label for="notifySlack">{{'MLA-SLACK_NOTIFICATION'|translate}}</label>
         </div>
         <div class="sub-form">
           <div class="form-group">
-            <label>Slackの通知先を入力してください。</label>
+            <label>{{'MLA-FORM_SLACK_TARGET'|translate}}</label>
             <div class="form-inline" ng-repeat="slackTo in asCtrl.input.slackTo track by $index">
               <input name="slackTarget" ng-model="slackTo.value" ng-required="asCtrl.input.notifySlack" type="text" class="form-control" placeholder="#channel"
                 size="30" ng-disabled="!asCtrl.input.notifySlack">
@@ -145,12 +145,25 @@
             </a>
           </div>
           <div class="form-group">
-            <label>elasticsearch.ymlに設定したSlackのaccountを入力してください。（空の場合、デフォルトアカウントを使用します）</label>
+            <label>{{'MLA-FORM_SLACK_ACCOUNT'|translate}}</label>
+            <p class="help-block">
+              {{'MLA-FORM_SLACK_ACCOUNT_HINT'|translate}}
+            </p>
             <input name="slackAccount" ng-model="asCtrl.input.slackAccount" type="text" class="form-control" placeholder="" ng-disabled="!asCtrl.input.notifySlack">
           </div>
         </div>
         <div class="form-group">
-          <label>通知に含めるリンク先のDashboardを選んでください。</label>
+          <input id="notifyLine" name="notifyLine" ng-model="asCtrl.input.notifyLine" type="checkbox" ng-required="!asCtrl.input.sendMail && !asCtrl.input.notifySlack">
+          <label for="notifyLine">LINE Notify</label>
+        </div>
+        <div class="sub-form">
+          <div class="form-group">
+            <label>{{'MLA-FORM_LINE_NOTIFY_ACCESS_TOKEN'|translate}}</label>
+            <input name="lineNotifyAccessToken" ng-model="asCtrl.input.lineNotifyAccessToken" ng-required="asCtrl.input.notifyLine" type="text" class="form-control" placeholder="" ng-disabled="!asCtrl.input.notifyLine">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{'MLA-FORM_LINK_DASHBOARD'|translate}}</label>
           <table class="kuiTable" ng-if="asCtrl.dashboards.length">
             <thead>
               <tr>
@@ -187,12 +200,12 @@
           </table>
           <div>
             <div class="btn btn-default" ng-click="asCtrl.selectDashboard()">
-              <span>Dashboard一覧から選択</span>
+              <span>{{'MLA-SELECT_DASHBOARD'|translate}}</span>
             </div>
           </div>
         </div>
         <div class="form-group">
-            <label>通知に含めるリンク先のSaved searchを選んでください。</label>
+            <label>{{'MLA-SELECT_SAVED_SEARCH_FROM_LIST'|translate}}</label>
             <table class="kuiTable" ng-if="asCtrl.savedSearches.length">
               <thead>
                 <tr>
@@ -229,115 +242,103 @@
             </table>
             <div>
               <div class="btn btn-default" ng-click="asCtrl.savedSearches.length || asCtrl.selectSavedSearch()" ng-disabled="asCtrl.savedSearches.length">
-                <span>Saved Search 一覧から選択</span>
+                <span>{{'MLA-SELECT_SAVED_SEARCH_FROM_LIST'|translate}}</span>
               </div>
             </div>
           </div>
           <div class="form-group">
-          <label>通知する閾値を入力してください。</label>
+          <label>{{'MLA-FORM_ALERT_THRESHOLD'|translate}}</label>
           <span class="sevierity-level" ng-click="asCtrl.setThreshold(75)">
             <i class="fa fa-exclamation-triangle icon-severity-critical"></i>
-            critical 以上
+            {{'MLA-ALERT_THRESHOLD_CRITICAL'|translate}}
           </span>
           <span class="sevierity-level" ng-click="asCtrl.setThreshold(50)">
             <i class="fa fa-exclamation-triangle icon-severity-major"></i>
-            major 以上
+            {{'MLA-ALERT_THRESHOLD_MAJOR'|translate}}
           </span>
           <span class="sevierity-level" ng-click="asCtrl.setThreshold(25)">
             <i class="fa fa-exclamation-triangle icon-severity-minor"></i>
-            minor 以上
+            {{'MLA-ALERT_THRESHOLD_MINOR'|translate}}
           </span>
           <span class="sevierity-level" ng-click="asCtrl.setThreshold(0)">
             <i class="fa fa-exclamation-triangle icon-severity-warning"></i>
-            warning 以上
+            {{'MLA-ALERT_THRESHOLD_WARNING'|translate}}
           </span>
           <input name="threshold" ng-model="asCtrl.input.threshold" required="" type="number" class="form-control" placeholder="0"
             size="15" min="0" max="100">
         </div>
         <div ng-show="!asCtrl.internal.ShowDetailSetting" ng-click="asCtrl.showDetail();">
-          <span aria-hidden="true" class="kuiIcon fa-caret-right"> 詳細設定を開く
+          <span aria-hidden="true" class="kuiIcon fa-caret-right"> {{'MLA-SHOW_ADVANCED_SETTINGS'|translate}}
         </div>
         <div ng-show="asCtrl.internal.ShowDetailSetting" ng-click="asCtrl.hideDetail();">
-          <span aria-hidden="true" class="kuiIcon fa-caret-down"> 詳細設定を閉じる
+          <span aria-hidden="true" class="kuiIcon fa-caret-down"> {{'MLA-CLOSE_ADVANCED_SETTINGS'|translate}}
         </div>
         <br />
         <div ng-show="asCtrl.internal.ShowDetailSetting">
           <div class="form-group">
-            <label>通知タイミングを設定してください。</label>
+            <label>{{'MLA-FORM_ALERT_TRIGGER_SCHEDULE'|translate}}</label>
             <p class="help-block">
-              タイミングはCronまたは繰り返し期間によって指定できます。
+                {{'MLA-FORM_ALERT_TRIGGER_SCHEDULE_HINT'|translate}}
             </p>
             <select ng-model="asCtrl.input.scheduleKind" class="form-control" required="required">
               <option value="cron" selected="selected">Cron</option>
-              <option value="interval">繰り返し期間</option>
-              <!--<option value="custom">カスタム</option>-->
+              <option value="interval">{{'MLA-INTERVAL'|translate}}</option>
             </select>
             <input name="triggerSchedule" ng-model="asCtrl.input.triggerSchedule" required="" type="text" class="form-control">
             <div class="hintbox" ng-if="asCtrl.input.scheduleKind == 'cron'">
-              <p class="ng-binding">
-                例：0 3/15 * * * ? ← 毎時 3分、18分、33分、48分に実行
-              </p>
+              <p class="multi-line-paragraph" translate="MLA-EXAMPLE_CRON"></p>
             </div>
             <div class="hintbox" ng-if="asCtrl.input.scheduleKind == 'interval'">
-              <p class="ng-binding">
-                例：3m ← 3分間隔で実行
-              </p>
+              <p class="multi-line-paragraph" translate="MLA-EXAMPLE_INTERVAL"></p>
             </div>
           </div>
           <div class="form-group">
-            <label>通知時にチェック対象とする異常検知結果の期間を指定してください。</label>
+            <label>{{'MLA-FORM_TARGET_INTERVAL'|translate}}</label>
             <input name="detectInterval" ng-model="asCtrl.input.detectInterval" required="" type="text" class="form-control">
             <div class="hintbox">
               <p>
-                通知タイミングの間隔に合わせてください。
+                {{'MLA-FORM_TARGET_INTERVAL_HINT'|translate}}
               </p>
             </div>
           </div>
           <div class="form-group">
-            <label>リンク対象Dashboardを開く際に、異常検知時刻の何秒前から何秒後までの時間範囲で表示するかを指定してください。</label>
+            <label>{{'MLA-FORM_KIBANA_DISPLAY_TERM'|translate}}</label>
             <input name="kibanaDisplayTerm" ng-model="asCtrl.input.kibanaDisplayTerm" required="" type="number" min="1" class="form-control">
           </div>
           <div class="form-group">
-            <label>通知メールに時刻を記載する際のフォーマットを決めるための、localeを指定してください。</label>
+            <label>{{'MLA-FORM_LOCALE'|translate}}</label>
             <input name="locale" ng-model="asCtrl.input.locale" required="" type="text" class="form-control">
           </div>
           <div class="form-group">
-            <label>MLの異常検知結果が確定するまでの遅延時間を入力してください。</label>
+            <label>{{'MLA-FORM_DELAY'|translate}}</label>
             <input name="mlProcessTime" ng-model="asCtrl.input.mlProcessTime" required="" type="text" class="form-control" ng-pattern="/^([1-9][0-9]*|0)[yMwdhms]$/">
             <div class="hintbox">
-              <p>
-                bucket_span + frequency + query_delay + (ML処理時間)
-                とする必要があります。<br />
-                この値を小さくし過ぎると、異常検知結果が正しく通知されません。
-              </p>
+              <p class="multi-line-paragraph" translate="MLA-FORM_DELAY_HINT"></p>
             </div>
             <div class="hintbox" ng-show="form.mlProcessTime.$error.pattern">
-                <p>
-                  入力の形式が正しくありません。<br />
-                  正しい入力の例："60s", "10m", "4h", "1d"
-                </p>
-              </div>
+              <p class="multi-line-paragraph" translate="MLA-FORM_DELAY_ERROR"></p>
             </div>
+          </div>
           <div class="form-group">
-            <label>実際の値でフィルターする場合、条件を指定してください。</label>
+            <label>{{'MLA-FORM_FILTER_BY_ACTUAL_VALUE'|translate}}</label>
             <div>
               <input id="filterByActualValue" name="filterByActualValue" ng-model="asCtrl.input.filterByActualValue" type="checkbox">
-              <label for="filterByActualValue">実際の値でフィルターする</label>
+              <label for="filterByActualValue">{{'MLA-FILTER_BY_ACTUAL_VALUE'|translate}}</label>
             </div>
             <div class="inline-group">
-              <span>(実際の値)</span>
+              <span>{{'MLA-ACTUAL_VALUE'|translate}}</span>
               <select class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" ng-model="asCtrl.input.compareOption" ng-options="option.operator for option in asCtrl.compareOptions"></select>
               <input class="form-control-inline" ng-disabled="!asCtrl.input.filterByActualValue" name="actualValueThreshold" ng-model="asCtrl.input.actualValueThreshold" required="" type="number" step="any">
             </div>
             <div class="hintbox">
               <p>
-                Anomaly scoreが閾値を超えていた場合も、実際の値がこの条件を満たさない場合には通知を抑制します。
+                {{'MLA-FORM_FILTER_BY_ACTUAL_VALUE_HINT'|translate}}
               </p>
             </div>
           </div>
           <div class="form-group">
-            <label>KibanaのURLを指定してください。</label>
-            <input name="locale" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
+            <label>{{'MLA-KIBANA_URL'|translate}}</label>
+            <input name="kibanaUrl" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
           </div>
         </div>
         <div class="form-group">

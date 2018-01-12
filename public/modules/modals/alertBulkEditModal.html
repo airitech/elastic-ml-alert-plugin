@@ -44,7 +44,7 @@
         </div>
         <div>
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditMail()" ng-checked="input.editMail">
-            メールアドレスを更新する
+          {{'MLA-UPDATE_MAIL_ADDRESS'|translate}}
         </div>
         <div class="form-group">
           <label>To:</label>
@@ -64,7 +64,7 @@
         <div class="form-group">
           <label>Cc:</label>
           <div class="form-inline" ng-repeat="mail in input.mailAddressCc track by $index">
-            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+            <input name="mailAddressCc" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
               size="30" ng-disabled="!input.editMail">
             <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
               tooltip-append-to-body="true" ng-disabled="!input.editMail">
@@ -79,7 +79,7 @@
         <div class="form-group">
           <label>Bcc:</label>
           <div class="form-inline" ng-repeat="mail in input.mailAddressBcc track by $index">
-            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+            <input name="mailAddressBcc" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
               size="30" ng-disabled="!input.editMail">
             <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
               tooltip-append-to-body="true" ng-disabled="!input.editMail">
@@ -93,7 +93,7 @@
         </div>
         <div>
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditSlack()" ng-checked="input.editSlack">
-            Slack通知先を更新する
+          {{'MLA-UPDATE_SLACK'|translate}}
         </div>
         <div class="form-group">
           <div class="form-inline" ng-repeat="slackTo in input.slackTo track by $index">
@@ -109,9 +109,16 @@
             <span aria-hidden="true" class="kuiButton__icon kuiIcon fa-plus"></span>
           </button>
         </div>
+        <div>
+          <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditLine()" ng-checked="input.editLine">
+          {{'MLA-UPDATE_LINE_NOTIFY'|translate}}
+        </div>
+        <div class="form-group">
+          <input name="lineNotifyAccessToken" ng-model="input.lineNotifyAccessToken" type="text" class="form-control" placeholder="" ng-disabled="!input.editLine">
+       </div>
         <div class="form-group">
           <input type="checkbox" class="kuiCheckBox" ng-click="toggleEditDashboard()" ng-checked="input.editDashboard">
-            通知に含めるリンク先のDashboardを更新する
+          {{'MLA-UPDATE_DASHBOARDS'|translate}}
           <table class="kuiTable" ng-if="dashboards.length">
             <thead>
               <tr>
@@ -148,13 +155,13 @@
           </table>
           <div>
             <button type="button" class="btn btn-success" ng-click="selectDashboard()" ng-disabled="!input.editDashboard">
-              <span>Dashboard一覧から選択</span>
+              <span>{{'MLA-SELECT_DASHBOARD'|translate}}</span>
             </button>
           </div>
         </div>
         <div class="modalEdit">
           <div class="modalButton">
-            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editSlack && !input.editDashboard">
+            <button type="submit" class="kuiButton kuiButton--primary" data-test-subj="alertBulkEditModalUpdateButton" ng-disabled="!input.editMail && !input.editSlack && !input.editDashboard && !input.editLine">
             {{updateButtonText}}
           </button>
           </div>

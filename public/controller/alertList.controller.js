@@ -1,4 +1,4 @@
-export default function AlertListController($scope, $routeParams, $location, docTitle, AlertService, confirmModal, Notifier, alertBulkEditModal) {
+export default function AlertListController($scope, $routeParams, $location, $translate, docTitle, AlertService, confirmModal, Notifier, alertBulkEditModal) {
   docTitle.change('ML Alert');
   const notify = new Notifier({ location: 'ML Alert' });
   $scope.selectedItems = [];
@@ -26,9 +26,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
   $scope.activateAlert = function ($event) {
     var alertId = $event.currentTarget.value;
     AlertService.activate([alertId], function (successCount, totalCount) {
-      notify.info(`有効化しました`);
+      $translate('MLA-ENABLED_ALERT', {"alertId": alertId}).then(function(translation) {
+        notify.info(translation);
+      });
     }, function (failCount, totalCount) {
-      notify.error(`有効化に失敗しました`);
+      $translate('MLA-ENABLE_ALERT_FAILED', {"alertId": alertId}).then(function(translation) {
+        notify.error(translation);
+      });
     })
       .then($scope.init)
       .catch(error => notify.error(error));
@@ -36,9 +40,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
   $scope.deactivateAlert = function ($event) {
     var alertId = $event.currentTarget.value;
     AlertService.deactivate([alertId], function (successCount, totalCount) {
-      notify.info(`無効化しました`);
+      $translate('MLA-DISABLED_ALERT', {"alertId": alertId}).then(function(translation) {
+        notify.info(translation);
+      });
     }, function (failCount, totalCount) {
-      notify.error(`無効化に失敗しました`);
+      $translate('MLA-DISABLE_ALERT_FAILED', {"alertId": alertId}).then(function(translation) {
+        notify.error(translation);
+      });
     })
       .then($scope.init)
       .catch(error => notify.error(error));
@@ -57,9 +65,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
     var alertId = $event.currentTarget.value;
     function doDelete() {
       AlertService.delete([alertId], function () {
-        notify.info(`${alertId}を削除しました`);
+        $translate('MLA-DELETED_ALERT', {"alertId": alertId}).then(function(translation) {
+          notify.info(translation);
+        });
       }, function () {
-        notify.error(`${alertId}の削除に失敗しました`);
+        $translate('MLA-DELETE_ALERT_FAILED', {"alertId": alertId}).then(function(translation) {
+          notify.error(translation);
+        });
       })
         .then($scope.init)
         .then(function () {
@@ -71,17 +83,23 @@ export default function AlertListController($scope, $routeParams, $location, doc
       confirmButtonText: `Delete ${alertId}`,
       onConfirm: doDelete
     };
-    confirmModal(
-      `${alertId}を削除しますか？この操作は取り消せません。`,
-      confirmModalOptions
-    );
+    $translate('MLA-CONFIRM_DELETE_ALERT', {"alertId": alertId}).then(function(translation) {
+      confirmModal(
+        translation,
+        confirmModalOptions
+      );
+    });
   };
   $scope.bulkEdit = function () {
     function doBulkDelete() {
       AlertService.delete($scope.selectedItems.map(item => item['_id']), function (successCount, totalCount) {
-        notify.info(`${totalCount}個中${successCount}個を削除しました`);
+        $translate('MLA-DELETED_ALERTS', {"totalCount": totalCount, "successCount": successCount}).then(function(translation) {
+          notify.info(translation);
+        });
       }, function (failCount, totalCount) {
-        notify.error(`${totalCount}個中${failCount}個の削除に失敗しました`);
+        $translate('MLA-DELETE_ALERTS_FAILED', {"totalCount": totalCount, "failCount": failCount}).then(function(translation) {
+          notify.error(translation);
+        });
       })
         .then($scope.init)
         .then(function () {
@@ -91,9 +109,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
     }
     function doBulkActivate() {
       AlertService.activate($scope.selectedItems.map(item => item['_id']), function (successCount, totalCount) {
-        notify.info(`${totalCount}個中${successCount}個を有効化しました`);
+        $translate('MLA-ENABLED_ALERTS', {"totalCount": totalCount, "successCount": successCount}).then(function(translation) {
+          notify.info(translation);
+        });
       }, function (failCount, totalCount) {
-        notify.error(`${totalCount}個中${failCount}個の有効化に失敗しました`);
+        $translate('MLA-ENABLE_ALERTS_FAILED', {"totalCount": totalCount, "failCount": failCount}).then(function(translation) {
+          notify.error(translation);
+        });
       })
         .then($scope.init)
         .then(function () {
@@ -103,9 +125,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
     }
     function doBulkDeactivate() {
       AlertService.deactivate($scope.selectedItems.map(item => item['_id']), function (successCount, totalCount) {
-        notify.info(`${totalCount}個中${successCount}個を無効化しました`);
+        $translate('MLA-DISABLED_ALERTS', {"totalCount": totalCount, "successCount": successCount}).then(function(translation) {
+          notify.info(translation);
+        });
       }, function (failCount, totalCount) {
-        notify.error(`${totalCount}個中${failCount}個の無効化に失敗しました`);
+        $translate('MLA-DISABLE_ALERTS_FAILED', {"totalCount": totalCount, "failCount": failCount}).then(function(translation) {
+          notify.error(translation);
+        });
       })
         .then($scope.init)
         .then(function () {
@@ -115,9 +141,13 @@ export default function AlertListController($scope, $routeParams, $location, doc
     }
     function doBulkUpdate(input) {
       AlertService.bulkUpdate($scope.selectedItems.map(item => item['_id']), input, function (successCount, totalCount) {
-        notify.info(`${totalCount}個中${successCount}個を更新しました`);
+        $translate('MLA-UPDATED_ALERTS', {"totalCount": totalCount, "successCount": successCount}).then(function(translation) {
+          notify.info(translation);
+        });
       }, function (failCount, totalCount) {
-        notify.error(`${totalCount}個中${failCount}個の更新に失敗しました`);
+        $translate('MLA-UPDATE_ALERTS_FAILED', {"totalCount": totalCount, "failCount": failCount}).then(function(translation) {
+          notify.error(translation);
+        });
       })
         .then($scope.init)
         .then(function () {
@@ -125,20 +155,24 @@ export default function AlertListController($scope, $routeParams, $location, doc
         })
         .catch(error => notify.error(error));
     }
-    const confirmModalOptions = {
-      onDelete: doBulkDelete,
-      onActivate: doBulkActivate,
-      onDeactivate: doBulkDeactivate,
-      onBulkUpdate: doBulkUpdate,
-      deleteMessage: "選択したアラートを削除します。この操作は取り消せません。",
-      activateMessage: "選択したアラートを有効化します。",
-      deactivateMessage: "選択したアラートを無効化します。",
-      title: "アラートの一括操作",
-      showClose: true
-    };
-    alertBulkEditModal(
-      confirmModalOptions
-    );
+    $translate(["MLA-DELETE_ALERTS_MESSAGE", "MLA-ENABLE_ALERTS_MESSAGE", "MLA-DISABLE_ALERTS_MESSAGE", "MLA-BULK_OPERATION_TITLE", "MLA-UPDATE_ALERTS_MESSAGE", "MLA-BULK_UPDATE"]).then(function(translations) {
+      const confirmModalOptions = {
+        onDelete: doBulkDelete,
+        onActivate: doBulkActivate,
+        onDeactivate: doBulkDeactivate,
+        onBulkUpdate: doBulkUpdate,
+        deleteMessage: translations["MLA-DELETE_ALERTS_MESSAGE"],
+        activateMessage: translations["MLA-ENABLE_ALERTS_MESSAGE"],
+        deactivateMessage: translations["MLA-DISABLE_ALERTS_MESSAGE"],
+        title: translations["MLA-BULK_OPERATION_TITLE"],
+        updateButtonText: translations["MLA-BULK_UPDATE"],
+        updateMessage: translations["MLA-UPDATE_ALERTS_MESSAGE"],
+        showClose: true
+      };
+      alertBulkEditModal(
+        confirmModalOptions
+      );
+    });
   };
   $scope.toggleAll = function () {
     if ($scope.selectedItems.length === $scope.data.length) {
@@ -155,7 +189,7 @@ export default function AlertListController($scope, $routeParams, $location, doc
       $scope.selectedItems.push(item);
     }
   };
-  // 該当のWatcherの設定一覧を取得する。
+  // Get watches of elastic-ml-alert
   $scope.init = function () {
     AlertService.searchList(function (body) {
       $scope.data = body["hits"]["hits"];

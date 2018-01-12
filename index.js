@@ -12,7 +12,8 @@ export default function (kibana) {
         main: 'plugins/es_ml_alert/app'
       },
       translations: [
-        resolve(__dirname, './translations/es.json')
+        resolve(__dirname, './translations/en.json'),
+        resolve(__dirname, './translations/ja.json')
       ]
     },
     config(Joi) {

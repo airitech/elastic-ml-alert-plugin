@@ -1,75 +1,70 @@
-Elasticsearch X-Pack Machine Learning用Alert通知簡単設定プラグイン
+Kibana app plugin for creating alert settings of Elasticsearch Machine Leaning Job easily
 ====
 
-Kibana UI上で簡単に<br>
-Elasticsearch Machine Learningの異常検知時の通知を<br>
-設定することができます。
+This plugin is for creating alert settings of X-Pack Machine Learning easily on Kibana UI.
 
-<img src="https://user-images.githubusercontent.com/33506001/34380793-69f98bd6-eb47-11e7-824a-23325a88cf4a.png" alt="settigs" />
+<img src="https://user-images.githubusercontent.com/33506001/34860782-49f218a4-f7a3-11e7-8dda-aa1db7d1ef74.png" alt="settigs" />
 
 # Requirement
 
-|No  |項目名  |必須バージョン |
+|No  |item  |required version |
 |---|---|---|
 |1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1|
 
-# 使い方
+# How to use
 
-インストール実施した後に、Kibanaを起動してください。
-Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加されます。
-こちらを選択して下さい。
-本機能が起動します。
+You will see "ML Alert" menu in Kibana side bar.
+Start to click this menu.
 
-## Alert設定追加画面
-異常検知結果を通知させたいML jobを選択し、設定を開始します。
+## Alert Settings
+Select ML job first.
+Then input alertID, description and other forms.
 
-<img src="https://user-images.githubusercontent.com/33506001/34380793-69f98bd6-eb47-11e7-824a-23325a88cf4a.png" alt="settigs" />
+<img src="https://user-images.githubusercontent.com/33506001/34860782-49f218a4-f7a3-11e7-8dda-aa1db7d1ef74.png" alt="settigs" />
 
-## Alert条件設定
-通知先や通知条件を設定します。以下の設定ができます。
-+ 通知先メールアドレス
-+ 通知先のSlack channel
-+ 通知メッセージに含めるリンク先のDashboard
-+ 通知メッセージに含めるリンク先のSaved Search
-+ 通知を行う異常検知スコア値
+You can set the following information
++ Mail address
++ Slack channel
++ Dashboards to show link in the notification message
++ Saved Search to show link in the notification message
++ Threshold of anomaly score
 
-Alertの起動タイミングなど、上記以外の設定値は自動で生成しますが、詳細設定で変更することもできます。
+Other settings are set automatically.
+But you can change in advanced settings.
 
-設定後に、Saveボタンを押して保存してください。
+Press Save button to save the alert.
 
-<img src="https://user-images.githubusercontent.com/33506001/34380805-7ab77514-eb47-11e7-8cb1-5765ad3cb6e5.png" alt="condition" />
+<img src="https://user-images.githubusercontent.com/33506001/34860784-4dd8794a-f7a3-11e7-851a-1c414095863a.png" alt="condition" />
 
-<img src="https://user-images.githubusercontent.com/33506001/34380811-82081d78-eb47-11e7-93a4-59dd04916733.png" alt="condition detail" />
+<img src="https://user-images.githubusercontent.com/33506001/34860790-547a61c8-f7a3-11e7-9d9e-0f88928f3299.png" alt="condition detail" />
 
-## Alert一覧画面
-追加したAlert設定の一覧を表示します。<br>
-複数のAlertを選択して、一括で削除やDeactivateなどの操作をすることも可能です。<br>
+## Alert List
+This view shows the list of alerts which are made through this plugin.<br>
+Bulk operation is also supported.<br>
 
-<img src="https://user-images.githubusercontent.com/33506001/34380816-8a6eafd6-eb47-11e7-9aaf-dd781c57cbf7.png" alt="list" />
+<img src="https://user-images.githubusercontent.com/33506001/34860804-5eb0af58-f7a3-11e7-8ac6-adc8c372f4a5.png" alt="list" />
 
-<img src="https://user-images.githubusercontent.com/33506001/34380843-c035d27a-eb47-11e7-8f7e-bf51cb45759a.png" alt="bulk edit" />
+<img src="https://user-images.githubusercontent.com/33506001/34860808-625ef07e-f7a3-11e7-9564-eb6574569f20.png" alt="bulk edit" />
 
-# インストール手順
+# Installation and prerequisite settings
 
-## Kibanaへのプラグインインストール
+## Plugin installation to Kibana
+Get plugin files from [Release page](https://github.com/serive/elastic-ml-alert-plugin/releases).
 
-[リリースページ](https://github.com/serive/elastic-ml-alert-plugin/releases) から、Kibanaのバージョンに合ったファイルを取得してください。
-
-Kibanaのインストールディレクトリに移動し、Kibanaが停止している状態で、以下のコマンドを実行してインストールします。
+Go to Kibana installation directory, stop Kibana process and run the installation command.
 ```
 sudo bin/kibana-plugin install file://<path to plugin>/es_ml_alert-x.x.x_y.y.y.zip
 ```
 
-※Kibanaプロセス実行中にインストールコマンドを実行すると、インストールに1時間以上かかる場合があるので注意してください。
++ Stop Kibana process before plugin installation! It may take more than hours to install the plugin if the Kibana process is running.
++ Plugin version and Kibana version must be same.
 
-※Kibanaのバージョンに合ったインストール媒体を使ってください。バージョンが合わないと、インストールに失敗します。
-
-## Elasticsearchへの、メール設定追加(メール通知を行う場合)
-以下を参考に、elasticsearch.yml にメール通知用の設定を追加してください。
+## Mail account settings(If you notify by e-mail)
+Add mail account settings to elasticsearch.yml.
 
 [Configuring Email Accounts](https://www.elastic.co/guide/en/x-pack/current/actions-email.html#configuring-email)
 
-### 設定例
+### Example
 ```
 xpack.notification.email.account:
     some_mail_account:
@@ -84,16 +79,16 @@ xpack.notification.email.account:
             user: notification@example.com
             password: passw0rd
 ```
-### 通知メールの例
+### Example of mail notification
 <img src="https://user-images.githubusercontent.com/33506001/34381422-c2e6d06a-eb4b-11e7-87d6-36df06f7f540.png" alt="mail" />
 
 
-## Elasticsearchへの、Slack設定追加(Slack通知を行う場合)
-以下を参考に、elasticsearch.yml にSlack通知用の設定を追加してください。
+## Slack account settings(If you notify by Slack)
+Add Slack account settings to elasticsearch.yml.
 
 [Configuring Slack Accounts](https://www.elastic.co/guide/en/x-pack/current/actions-slack.html#configuring-slack)
 
-### 設定例
+### Example
 ```
 xpack.notification.slack:
   account:
@@ -103,15 +98,24 @@ xpack.notification.slack:
         from: elastic-ml-alert
 ```
 
-### Slack通知の例
+### Example of Slack notification
 <img src="https://user-images.githubusercontent.com/33506001/34381424-c49b2726-eb4b-11e7-8bb0-110d1c494851.png" alt="slack" />
 
-※ Elasticsearch 6.1.1 のX-Pack Watcherには、非ASCII文字をSlackに送ると（webhookも同様）全て「?」に変換されてしまう問題があります。そのため、Machine Learning Jobのpartition fieldやpartition valueにマルチバイト文字が含まれると、通知メッセージの表示がおかしくなったりリンクが壊れる場合があります。今後のバージョンアップで修正されるものと思われます。
++ Elasticsearch 6.1.1 X-Pack Watcher has a problem sending multibyte characters to slack(actually, it is the problem of webhook). Non-ASCII characters are replaced to "?". Therefore it may cause a problem if Machine Learning Job partition field or partition value has Non-ASCII characters.
 
-# 開発に関して
+## LINE Notify settings(If you notify by LINE)
+Get access token from [LINE Notify](https://notify-bot.line.me/) .
 
-Kibanaプラグインとして開発しています。<br>
-以下にKibanaプラグインの開発情報を記載します。
+You don't need to write it in elasticsearch.yml.
+
++ Link to Dashboard, Saved Search and Single Metric Viewer are not contained in the notification message of LINE Notify.
+
+### Example of LINE Notify message
+<img src="https://user-images.githubusercontent.com/33506001/34860737-ef302c1c-f7a2-11e7-8543-461c82667c79.png" alt="slack" />
+
+# About development
+
+This plugin is Kibana plugin.
 
 See the [kibana contributing guide](https://github.com/elastic/kibana/blob/master/CONTRIBUTING.md) for instructions setting up your development environment. Once you have completed that, use the following npm tasks.
 
