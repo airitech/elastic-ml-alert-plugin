@@ -64,7 +64,7 @@
         <div class="form-group">
           <label>Cc:</label>
           <div class="form-inline" ng-repeat="mail in input.mailAddressCc track by $index">
-            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+            <input name="mailAddressCc" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
               size="30" ng-disabled="!input.editMail">
             <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
               tooltip-append-to-body="true" ng-disabled="!input.editMail">
@@ -79,7 +79,7 @@
         <div class="form-group">
           <label>Bcc:</label>
           <div class="form-inline" ng-repeat="mail in input.mailAddressBcc track by $index">
-            <input name="mailAddress" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
+            <input name="mailAddressBcc" ng-model="mail.value" ng-required="input.editMail" type="text" class="form-control" placeholder="sample@sample.com"
               size="30" ng-disabled="!input.editMail">
             <button type="button" class="kuiButton kuiButton--danger" ng-click="deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
               tooltip-append-to-body="true" ng-disabled="!input.editMail">
