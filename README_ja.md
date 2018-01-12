@@ -116,6 +116,9 @@ xpack.notification.slack:
 
 ※LINE Notifyによる通知メッセージには、Dashboard, Saved Search, Single Metric Viewerなどへのリンクは含まれません
 
+### LINE Notifyによる通知メッセージの例
+<img src="https://user-images.githubusercontent.com/33506001/34860737-ef302c1c-f7a2-11e7-8543-461c82667c79.png" alt="slack" />
+
 # 開発に関して
 
 Kibanaプラグインとして開発しています。<br>
