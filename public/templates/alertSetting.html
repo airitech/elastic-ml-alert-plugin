@@ -56,7 +56,7 @@
           <p class="help-block">
             {{'MLA-FORM_ALERT_ID_HINT'|translate}}
           </p>
-          <input id="alertId" name="description" ng-model="asCtrl.input.alertId" required="" type="text" class="form-control" placeholder="alert_id"
+          <input id="alertId" name="alertId" ng-model="asCtrl.input.alertId" required="" type="text" class="form-control" placeholder="alert_id"
             ng-change="asCtrl.checkAlertId()">
           <div class="hintbox" ng-if="asCtrl.existsAlert">
             <p class="ng-binding">
@@ -96,7 +96,7 @@
           <div class="form-group">
             <label>Cc:</label>
             <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressCc track by $index">
-              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+              <input name="mailAddressCc" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
                 size="30" ng-disabled="!asCtrl.input.sendMail">
               <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteCc($index)" aria-label="Remove mail cc input field" tooltip="Remove input field"
                 tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
@@ -111,7 +111,7 @@
           <div class="form-group">
             <label>Bcc:</label>
             <div class="form-inline" ng-repeat="mail in asCtrl.input.mailAddressBcc track by $index">
-              <input name="mailAddress" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
+              <input name="mailAddressBcc" ng-model="mail.value" ng-required="asCtrl.input.sendMail" type="text" class="form-control" placeholder="sample@sample.com"
                 size="30" ng-disabled="!asCtrl.input.sendMail">
               <a class="kuiButton kuiButton--danger" ng-class="{'kuiButton-isDisabled': !asCtrl.input.sendMail}" ng-click="!asCtrl.input.sendMail || asCtrl.deleteBcc($index)" aria-label="Remove mail bcc input field" tooltip="Remove input field"
                 tooltip-append-to-body="true" ng-disabled="!asCtrl.input.sendMail">
@@ -338,7 +338,7 @@
           </div>
           <div class="form-group">
             <label>{{'MLA-KIBANA_URL'|translate}}</label>
-            <input name="locale" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
+            <input name="kibanaUrl" ng-model="asCtrl.input.kibanaUrl" required="" type="text" class="form-control">
           </div>
         </div>
         <div class="form-group">
