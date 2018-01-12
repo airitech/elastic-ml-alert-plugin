@@ -1,3 +1,5 @@
+[README in English](./README.md)
+
 Elasticsearch X-Pack Machine Learning用Alert通知簡単設定プラグイン
 ====
 

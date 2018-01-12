@@ -1,3 +1,5 @@
+[日本語版README](./README_ja.md)
+
 Kibana app plugin for creating alert settings of Elasticsearch Machine Leaning Job easily
 ====
 
