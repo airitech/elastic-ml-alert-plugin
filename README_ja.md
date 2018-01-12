@@ -5,7 +5,7 @@ Kibana UI上で簡単に<br>
 Elasticsearch Machine Learningの異常検知時の通知を<br>
 設定することができます。
 
-<img src="https://user-images.githubusercontent.com/33506001/34380793-69f98bd6-eb47-11e7-824a-23325a88cf4a.png" alt="settigs" />
+<img src="https://user-images.githubusercontent.com/33506001/34860507-56a44966-f7a1-11e7-89d0-3a836f3e2b75.png" alt="settigs" />
 
 # Requirement
 
@@ -23,12 +23,13 @@ Kibanaにアクセスすると、サイドメニューに「ML Alert」が追加
 ## Alert設定追加画面
 異常検知結果を通知させたいML jobを選択し、設定を開始します。
 
-<img src="https://user-images.githubusercontent.com/33506001/34380793-69f98bd6-eb47-11e7-824a-23325a88cf4a.png" alt="settigs" />
+<img src="https://user-images.githubusercontent.com/33506001/34860507-56a44966-f7a1-11e7-89d0-3a836f3e2b75.png" alt="settigs" />
 
 ## Alert条件設定
 通知先や通知条件を設定します。以下の設定ができます。
 + 通知先メールアドレス
 + 通知先のSlack channel
++ LINE Notify通知用のアクセストークン
 + 通知メッセージに含めるリンク先のDashboard
 + 通知メッセージに含めるリンク先のSaved Search
 + 通知を行う異常検知スコア値
@@ -37,17 +38,17 @@ Alertの起動タイミングなど、上記以外の設定値は自動で生成
 
 設定後に、Saveボタンを押して保存してください。
 
-<img src="https://user-images.githubusercontent.com/33506001/34380805-7ab77514-eb47-11e7-8cb1-5765ad3cb6e5.png" alt="condition" />
+<img src="https://user-images.githubusercontent.com/33506001/34860531-803970a8-f7a1-11e7-88ce-9ce9ec45880c.png" alt="condition" />
 
-<img src="https://user-images.githubusercontent.com/33506001/34380811-82081d78-eb47-11e7-93a4-59dd04916733.png" alt="condition detail" />
+<img src="https://user-images.githubusercontent.com/33506001/34860677-8e8bb282-f7a2-11e7-9876-8c8a18b13818.png" alt="condition detail" />
 
 ## Alert一覧画面
 追加したAlert設定の一覧を表示します。<br>
 複数のAlertを選択して、一括で削除やDeactivateなどの操作をすることも可能です。<br>
 
-<img src="https://user-images.githubusercontent.com/33506001/34380816-8a6eafd6-eb47-11e7-9aaf-dd781c57cbf7.png" alt="list" />
+<img src="https://user-images.githubusercontent.com/33506001/34860548-9b9fa95c-f7a1-11e7-9153-0d68616fba7d.png" alt="list" />
 
-<img src="https://user-images.githubusercontent.com/33506001/34380843-c035d27a-eb47-11e7-8f7e-bf51cb45759a.png" alt="bulk edit" />
+<img src="https://user-images.githubusercontent.com/33506001/34860556-a644a6fa-f7a1-11e7-9114-86b5cbb76185.png" alt="bulk edit" />
 
 # インストール手順
 
@@ -107,6 +108,13 @@ xpack.notification.slack:
 <img src="https://user-images.githubusercontent.com/33506001/34381424-c49b2726-eb4b-11e7-8bb0-110d1c494851.png" alt="slack" />
 
 ※ Elasticsearch 6.1.1 のX-Pack Watcherには、非ASCII文字をSlackに送ると（webhookも同様）全て「?」に変換されてしまう問題があります。そのため、Machine Learning Jobのpartition fieldやpartition valueにマルチバイト文字が含まれると、通知メッセージの表示がおかしくなったりリンクが壊れる場合があります。今後のバージョンアップで修正されるものと思われます。
+
+## LINE Notifyの設定(LINEに通知する場合)
+[LINE Notify](https://notify-bot.line.me/ja/) から、アクセストークンを取得してください。
+
+取得したアクセストークンを指定すれば、通知が届くようになります。
+
+※LINE Notifyによる通知メッセージには、Dashboard, Saved Search, Single Metric Viewerなどへのリンクは含まれません
 
 # 開発に関して
 
