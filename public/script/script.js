@@ -1,28 +1,29 @@
 /** \ and ` must be escaped. \ -> \\, ` -> \`  */
 export const script=`/**
-* maxやminなど追加でフィルタすると助かる場合には、追加のフィルタを入れる。
-*/
+ * Filter for max, high_mean, min and low_mean
+ */
 String makeFilter(def hit) {
- def rand = new Random();
- def vals = hit._source;
- def funcName = vals.function;
- def fieldName = vals.field_name;
- def fieldValue = vals.actual[0];
- def valFilterQuery = '';
- // max/high_meanの場合
- // 指定値より大きいもので絞る
- if (funcName == 'high_mean' || funcName == 'max') {
-   def filterAlias = fieldName + '%20%E2%89%A5%20' + fieldValue;
-   def rangeQuery = 'query:(range:(' + fieldName + ':(gte:' + fieldValue + ')))';
-   valFilterQuery = '(meta:(alias:\\'' + filterAlias + '\\',disabled:!f,index:i' + rand.nextLong() + ',key:query,negate:!f,type:custom),' + rangeQuery + ')';
- }
- // min/low_meanの場合
- if (funcName == 'low_mean' || funcName == 'min') {
-   def filterAlias = fieldName + '%20%E2%89%A4%20' + fieldValue;
-   def rangeQuery = 'query:(range:(' + fieldName + ':(lte:' + fieldValue + ')))';
-   valFilterQuery = '(meta:(alias:\\'' + filterAlias + '\\',disabled:!f,index:i' + rand.nextLong() + ',key:query,negate:!f,type:custom),' + rangeQuery + ')';
- }
- return valFilterQuery;
+  def rand = new Random();
+  def vals = hit._source;
+  def funcName = vals.function;
+  def fieldName = vals.field_name;
+  def fieldValue = vals.actual[0];
+  def valFilterQuery = '';
+  // max/high_mean
+  // filter values greater than or equal to the actual value
+  if (funcName == 'high_mean' || funcName == 'max') {
+    def filterAlias = fieldName + '%20%E2%89%A5%20' + fieldValue;
+    def rangeQuery = 'query:(range:(' + fieldName + ':(gte:' + fieldValue + ')))';
+    valFilterQuery = '(meta:(alias:\\'' + filterAlias + '\\',disabled:!f,index:i' + rand.nextLong() + ',key:query,negate:!f,type:custom),' + rangeQuery + ')';
+  }
+  // min/low_mean
+  // filter values lower than or equal to the actual value
+  if (funcName == 'low_mean' || funcName == 'min') {
+    def filterAlias = fieldName + '%20%E2%89%A4%20' + fieldValue;
+    def rangeQuery = 'query:(range:(' + fieldName + ':(lte:' + fieldValue + ')))';
+    valFilterQuery = '(meta:(alias:\\'' + filterAlias + '\\',disabled:!f,index:i' + rand.nextLong() + ',key:query,negate:!f,type:custom),' + rangeQuery + ')';
+  }
+  return valFilterQuery;
 }
 def rand = new Random();
 def dateForJpn = LocalDateTime.ofInstant(Instant.ofEpochMilli(ctx.execution_time.millis), ZoneId.of(ctx.metadata.locale));
@@ -38,103 +39,102 @@ def url = ctx.metadata.kibana_url + 'app/ml#/explorer?_g=(ml:(jobIds:!(\\'' + ct
 def link = '<a href=' + ctx.metadata.double_quate + url + ctx.metadata.double_quate + '>Anomaly Explorer</a>';
 def smvUrl = ctx.metadata.kibana_url + 'app/ml#/timeseriesexplorer?_g=(ml:(jobIds:!(\\'' + ctx.metadata.job_id + '\\')),time:(from:'+ ctx.metadata.quate + longBeforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))';
 def smvLink = '<a href=' + ctx.metadata.double_quate + smvUrl + ctx.metadata.double_quate + '>Single Metric Viewer</a>';
-def message = 'Elasticsearch MLによって異常を検知しました.';
+def message = ctx.metadata.subject;
 message += '<br />';
 message += '<br />Alert ID: ' + ctx.watch_id;
 message += '<br />' + ctx.metadata.description;
 message += '<br />';
-message += '<br />基本情報';
-message += '<br />　' + link;
-message += '<br />　' + smvLink;
-message += '<br />　検知時間: ' + dateForJpnStr;
-message += '<br />　ML実行JobID: ' + ctx.metadata.job_id;
+message += '<br />' + link;
+message += '<br />' + smvLink;
+message += '<br />Alert Triggered Time: ' + dateForJpnStr;
+message += '<br />ML JobID: ' + ctx.metadata.job_id;
 if (ctx.metadata.link_dashboards.length != 0) {
- message += '<br />　参照Dashboard: ';
- for (def dashboard : ctx.metadata.link_dashboards) {
-   def dashboardUrl = ctx.metadata.kibana_url + 'app/kibana#/dashboard/' + dashboard.id + '?_g=(time:(from:'+ ctx.metadata.quate + beforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))';
-   def dashboardLink = '<a href=' + ctx.metadata.double_quate + dashboardUrl + ctx.metadata.double_quate + '>' + dashboard.title + '</a>';
-   message += dashboardLink + ' ';
- }
+  message += '<br />Dashboard: ';
+  for (def dashboard : ctx.metadata.link_dashboards) {
+    def dashboardUrl = ctx.metadata.kibana_url + 'app/kibana#/dashboard/' + dashboard.id + '?_g=(time:(from:'+ ctx.metadata.quate + beforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))';
+    def dashboardLink = '<a href=' + ctx.metadata.double_quate + dashboardUrl + ctx.metadata.double_quate + '>' + dashboard.title + '</a>';
+    message += '<br />&emsp;&emsp;' + dashboardLink;
+  }
 }
-message += '<br /><br />詳細';
+message += '<br /><br />Detail';
 for (def hit : ctx.payload.hits.hits) {
- def anomalyDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(hit._source.timestamp), ZoneId.of(ctx.metadata.locale));
- def anomalyDateStr = anomalyDate.format(DateTimeFormatter.ofPattern(ctx.metadata.date_format));
- message += '<br />　timestamp: ' + anomalyDateStr;
- def partitionName = hit._source.partition_field_name;
- String partitionValue = hit._source.partition_field_value;
- def detectorIndex = 0;
- def partitionFilter = '';
- double score = hit._source.record_score;
- message += '<br />　function: ' + hit._source.function;
- message += '<br />　description: ' + hit._source.function_description;
- message += '<br />　field name: ' + hit._source.field_name;
- message += '<br />　anomaly score: ' + score;
- def typical = hit._source.typical[0];
- def actual = hit._source.actual[0];
- message += '<br />　actual: ' + actual;
- message += '<br />　typical: ' + typical;
- message += '<br />　probability: ' + hit._source.probability;
- if (hit._source.detector_index != null) {
-   detectorIndex = hit._source.detector_index;
- }
- if (partitionName != null) {
-   String escapedPartitionValue = partitionValue.replace('!', '!!');
-   escapedPartitionValue = escapedPartitionValue.replace('\\'', '!\\'');
-   escapedPartitionValue = escapedPartitionValue.replace('%', '%25');
-   escapedPartitionValue = escapedPartitionValue.replace('"', '%22');
-   escapedPartitionValue = escapedPartitionValue.replace('#', '%23');
-   escapedPartitionValue = escapedPartitionValue.replace('&', '%26');
-   escapedPartitionValue = escapedPartitionValue.replace('+', '%2B');
-   escapedPartitionValue = escapedPartitionValue.replace(' ', '%20');
-   escapedPartitionValue = escapedPartitionValue.replace('\`', '%60');
-   partitionFilter = '(meta:(alias:!n,disabled:!f,index:i' + rand.nextLong() + ',key:' + partitionName + ',negate:!f,params:(query:\\'' + escapedPartitionValue + '\\',type:phrase),type:phrase,value:\\'' + escapedPartitionValue + '\\'),query:(match:(' + partitionName + ':(query:\\'' + escapedPartitionValue + '\\',type:phrase))))';
-   String partitionedSmvFilter = '&_a=(mlTimeSeriesExplorer:(detectorIndex:' + detectorIndex + ',entities:(' + partitionName + ':\\'' + escapedPartitionValue + '\\')))';
-   String partitionedSmvUrl = ctx.metadata.kibana_url + 'app/ml#/timeseriesexplorer?_g=(ml:(jobIds:!(\\'' + ctx.metadata.job_id + '\\')),time:(from:'+ ctx.metadata.quate + longBeforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))' + partitionedSmvFilter;
-   String partitionedSmvLink = '<a href=' + ctx.metadata.double_quate + partitionedSmvUrl + ctx.metadata.double_quate + '>' + 'Single Metric Viewer</a>';
-   message += '<br />　partitions:<br />　　partition name: ' + partitionName + '<br />　　partition value: ' + partitionValue + '<br />　　' + partitionedSmvLink;
-   def partitionQuery = '&_a=(filters:!(' + partitionFilter + '))';
-   for (def dashboard : ctx.metadata.link_dashboards) {
-     def dashboardUrl = ctx.metadata.kibana_url + 'app/kibana#/dashboard/' + dashboard.id + '?_g=(time:(from:'+ ctx.metadata.quate + beforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))' + partitionQuery;
-     def dashboardLink = '<a href=' + ctx.metadata.double_quate + dashboardUrl + ctx.metadata.double_quate + '>' + dashboard.title + '</a>';
-     message += '<br />　　' + dashboardLink;
-   }
- }
+  def anomalyDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(hit._source.timestamp), ZoneId.of(ctx.metadata.locale));
+  def anomalyDateStr = anomalyDate.format(DateTimeFormatter.ofPattern(ctx.metadata.date_format));
+  message += '<br />&emsp;&emsp;timestamp: ' + anomalyDateStr;
+  def partitionName = hit._source.partition_field_name;
+  String partitionValue = hit._source.partition_field_value;
+  def detectorIndex = 0;
+  def partitionFilter = '';
+  double score = hit._source.record_score;
+  message += '<br />&emsp;&emsp;function: ' + hit._source.function;
+  message += '<br />&emsp;&emsp;description: ' + hit._source.function_description;
+  message += '<br />&emsp;&emsp;field name: ' + hit._source.field_name;
+  message += '<br />&emsp;&emsp;anomaly score: ' + score;
+  def typical = hit._source.typical[0];
+  def actual = hit._source.actual[0];
+  message += '<br />&emsp;&emsp;actual: ' + actual;
+  message += '<br />&emsp;&emsp;typical: ' + typical;
+  message += '<br />&emsp;&emsp;probability: ' + hit._source.probability;
+  if (hit._source.detector_index != null) {
+    detectorIndex = hit._source.detector_index;
+  }
+  if (partitionName != null) {
+    String escapedPartitionValue = partitionValue.replace('!', '!!');
+    escapedPartitionValue = escapedPartitionValue.replace('\\'', '!\\'');
+    escapedPartitionValue = escapedPartitionValue.replace('%', '%25');
+    escapedPartitionValue = escapedPartitionValue.replace('"', '%22');
+    escapedPartitionValue = escapedPartitionValue.replace('#', '%23');
+    escapedPartitionValue = escapedPartitionValue.replace('&', '%26');
+    escapedPartitionValue = escapedPartitionValue.replace('+', '%2B');
+    escapedPartitionValue = escapedPartitionValue.replace(' ', '%20');
+    escapedPartitionValue = escapedPartitionValue.replace('\`', '%60');
+    partitionFilter = '(meta:(alias:!n,disabled:!f,index:i' + rand.nextLong() + ',key:' + partitionName + ',negate:!f,params:(query:\\'' + escapedPartitionValue + '\\',type:phrase),type:phrase,value:\\'' + escapedPartitionValue + '\\'),query:(match:(' + partitionName + ':(query:\\'' + escapedPartitionValue + '\\',type:phrase))))';
+    String partitionedSmvFilter = '&_a=(mlTimeSeriesExplorer:(detectorIndex:' + detectorIndex + ',entities:(' + partitionName + ':\\'' + escapedPartitionValue + '\\')))';
+    String partitionedSmvUrl = ctx.metadata.kibana_url + 'app/ml#/timeseriesexplorer?_g=(ml:(jobIds:!(\\'' + ctx.metadata.job_id + '\\')),time:(from:'+ ctx.metadata.quate + longBeforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))' + partitionedSmvFilter;
+    String partitionedSmvLink = '<a href=' + ctx.metadata.double_quate + partitionedSmvUrl + ctx.metadata.double_quate + '>' + 'Single Metric Viewer</a>';
+    message += '<br />&emsp;&emsp;partitions:<br />&emsp;&emsp;&emsp;&emsp;partition name: ' + partitionName + '<br />&emsp;&emsp;&emsp;&emsp;partition value: ' + partitionValue + '<br />&emsp;&emsp;&emsp;&emsp;' + partitionedSmvLink;
+    def partitionQuery = '&_a=(filters:!(' + partitionFilter + '))';
+    for (def dashboard : ctx.metadata.link_dashboards) {
+      def dashboardUrl = ctx.metadata.kibana_url + 'app/kibana#/dashboard/' + dashboard.id + '?_g=(time:(from:'+ ctx.metadata.quate + beforeDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + afterDate + ctx.metadata.quate + '))' + partitionQuery;
+      def dashboardLink = '<a href=' + ctx.metadata.double_quate + dashboardUrl + ctx.metadata.double_quate + '>' + dashboard.title + '</a>';
+      message += '<br />&emsp;&emsp;&emsp;&emsp;' + dashboardLink;
+    }
+  }
 
- // Saved Search用のURL生成処理を実施。異常値の対象時間に絞り込みをかける。
- if (ctx.metadata.link_saved_searches.length == 1) {
-   def savedSearchId = ctx.metadata.link_saved_searches[0].id;
-   def startAnomalyDate = Instant.ofEpochMilli(hit._source.timestamp);
-   def endAnomalyDateMilli =hit._source.timestamp + hit._source.bucket_span * 1000;
-   def endAnomalyDate = Instant.ofEpochMilli(endAnomalyDateMilli);
-   def timeQuery = '_g=(time:(from:'+ ctx.metadata.quate + startAnomalyDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + endAnomalyDate + ctx.metadata.quate + '))';
-   def targetDiscoveryUrl = '';
-   def discoveryUrl = ctx.metadata.kibana_url + 'app/kibana#/discover/' + savedSearchId + '?';
-   if (partitionName != null) {
-     targetDiscoveryUrl = discoveryUrl + timeQuery + '&_a=(filters:!(' + partitionFilter + '))';
-   } else {
-     targetDiscoveryUrl = discoveryUrl + timeQuery;
-   }
-   message += '<br />　<a href=' + ctx.metadata.double_quate + targetDiscoveryUrl + ctx.metadata.double_quate + '>Saved Searchを開く</a>';
-   // 値で絞り込みを実施して、Saved Searchを開けるようにする。
-   def valQuery = makeFilter(hit);
-   if (valQuery != '') {
-     def queryFilterQuery = '';
-     if (partitionName != null) {
-       queryFilterQuery = '&_a=(filters:!(' + partitionFilter + ',' + valQuery + '))';
-     } else {
-       queryFilterQuery = '&_a=(filters:!(' + valQuery + '))';
-     }
-     def targetFilterDiscoveryUrl = discoveryUrl + timeQuery + queryFilterQuery;
-     message += '<br />　<a href=' + ctx.metadata.double_quate + targetFilterDiscoveryUrl + ctx.metadata.double_quate + '>値で絞り込んでSaved Searchを開く</a>';
-   }
- }
- message += '<br />';
+  // Saved Search URL
+  if (ctx.metadata.link_saved_searches.length == 1) {
+    def savedSearchId = ctx.metadata.link_saved_searches[0].id;
+    def startAnomalyDate = Instant.ofEpochMilli(hit._source.timestamp);
+    def endAnomalyDateMilli =hit._source.timestamp + hit._source.bucket_span * 1000;
+    def endAnomalyDate = Instant.ofEpochMilli(endAnomalyDateMilli);
+    def timeQuery = '_g=(time:(from:'+ ctx.metadata.quate + startAnomalyDate + ctx.metadata.quate + ',mode:absolute,to:' + ctx.metadata.quate + endAnomalyDate + ctx.metadata.quate + '))';
+    def targetDiscoveryUrl = '';
+    def discoveryUrl = ctx.metadata.kibana_url + 'app/kibana#/discover/' + savedSearchId + '?';
+    if (partitionName != null) {
+      targetDiscoveryUrl = discoveryUrl + timeQuery + '&_a=(filters:!(' + partitionFilter + '))';
+    } else {
+      targetDiscoveryUrl = discoveryUrl + timeQuery;
+    }
+    message += '<br />&emsp;&emsp;<a href=' + ctx.metadata.double_quate + targetDiscoveryUrl + ctx.metadata.double_quate + '>Open Saved Search</a>';
+    // Saved Search filtered by value
+    def valQuery = makeFilter(hit);
+    if (valQuery != '') {
+      def queryFilterQuery = '';
+      if (partitionName != null) {
+        queryFilterQuery = '&_a=(filters:!(' + partitionFilter + ',' + valQuery + '))';
+      } else {
+        queryFilterQuery = '&_a=(filters:!(' + valQuery + '))';
+      }
+      def targetFilterDiscoveryUrl = discoveryUrl + timeQuery + queryFilterQuery;
+      message += '<br />&emsp;&emsp;<a href=' + ctx.metadata.double_quate + targetFilterDiscoveryUrl + ctx.metadata.double_quate + '>Open Saved Search filtered by value</a>';
+    }
+  }
+  message += '<br />';
 }
 return [ 'message' : message ];`;
 export const scriptSlack=`// Non-ASCII character cannot be used in slack integration(6.1.0)
 /**
- * maxやminなど追加でフィルタすると助かる場合には、追加のフィルタを入れる。
+ * Filter for max, high_mean, min and low_mean
  */
 String makeFilter(def hit) {
   def rand = new Random();
@@ -143,14 +143,15 @@ String makeFilter(def hit) {
   def fieldName = vals.field_name;
   def fieldValue = vals.actual[0];
   def valFilterQuery = '';
-  // max/high_meanの場合
-  // 指定値より大きいもので絞る
+  // max/high_mean
+  // filter values greater than or equal to the actual value
   if (funcName == 'high_mean' || funcName == 'max') {
     def filterAlias = fieldName + '%20%E2%89%A5%20' + fieldValue;
     def rangeQuery = 'query:(range:(' + fieldName + ':(gte:' + fieldValue + ')))';
     valFilterQuery = '(meta:(alias:\\'' + filterAlias + '\\',disabled:!f,index:i' + rand.nextLong() + ',key:query,negate:!f,type:custom),' + rangeQuery + ')';
   }
-  // min/low_meanの場合
+  // min/low_mean
+  // filter values lower than or equal to the actual value
   if (funcName == 'low_mean' || funcName == 'min') {
     def filterAlias = fieldName + '%20%E2%89%A4%20' + fieldValue;
     def rangeQuery = 'query:(range:(' + fieldName + ':(lte:' + fieldValue + ')))';
@@ -276,7 +277,7 @@ for (def hit : ctx.payload.hits.hits) {
     }
   }
 
-  // Saved Search用のURL生成処理を実施。異常値の対象時間に絞り込みをかける。
+  // Saved Search URL
   if (ctx.metadata.link_saved_searches.length == 1) {
     def savedSearchId = ctx.metadata.link_saved_searches[0].id;
     def startAnomalyDate = Instant.ofEpochMilli(hit._source.timestamp);
@@ -292,7 +293,7 @@ for (def hit : ctx.payload.hits.hits) {
     }
     message += '
   <' + targetDiscoveryUrl + '|Open Saved Search>';
-    // 値で絞り込みを実施して、Saved Searchを開けるようにする。
+    // Saved Search filtered by value
     def valQuery = makeFilter(hit);
     if (valQuery != '') {
       def queryFilterQuery = '';
@@ -311,7 +312,7 @@ for (def hit : ctx.payload.hits.hits) {
 }
 return [ 'message' : message , 'severity' : severity , 'severityColor' : severityColor ];`;
 export const scriptLine=`/**
- * maxやminなど追加でフィルタすると助かる場合には、追加のフィルタを入れる。
+ * Filter for max, high_mean, min and low_mean
  */
 String mainTemplate = '%s
 %s
