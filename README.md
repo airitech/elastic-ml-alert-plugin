@@ -11,7 +11,7 @@ This plugin is for creating alert settings of X-Pack Machine Learning easily on 
 
 |No  |item  |required version |
 |---|---|---|
-|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2|
+|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2, 6.2.1|
 
 # How to use
 
@@ -75,7 +75,6 @@ xpack.notification.email.account:
         smtp:
             auth: true
             starttls.enable: true
-            starttls.required: true
             host: smtp.example.com
             port: 587
             user: notification@example.com
