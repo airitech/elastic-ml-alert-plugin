@@ -13,7 +13,7 @@ Elasticsearch Machine Learningの異常検知時の通知を<br>
 
 |No  |項目名  |必須バージョン |
 |---|---|---|
-|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2|
+|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2, 6.2.1|
 
 # 使い方
 
@@ -81,7 +81,6 @@ xpack.notification.email.account:
         smtp:
             auth: true
             starttls.enable: true
-            starttls.required: true
             host: smtp.example.com
             port: 587
             user: notification@example.com
