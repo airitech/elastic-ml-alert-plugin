@@ -11,7 +11,7 @@ This plugin is for creating alert settings of X-Pack Machine Learning easily on 
 
 |No  |item  |required version |
 |---|---|---|
-|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2, 6.2.1, 6.2.2, 6.2.3|
+|1|Kibana|6.0.0, 6.0.1, 6.1.0, 6.1.1, 6.1.2, 6.2.1, 6.2.2, 6.2.3, 6.2.4|
 
 # How to use
 
